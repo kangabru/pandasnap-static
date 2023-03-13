@@ -2,6 +2,106 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  @apply font-mono bg-gray-900 text-white;
+@layer components {
+  .row {
+    @apply flex flex-row items-center;
+  }
+
+  .col {
+    @apply flex flex-col items-center;
+  }
+
+  .link {
+    @apply button-outline rounded p-1 text-green-500 hover:text-green-600 hover:underline;
+  }
+
+  .button {
+    @apply button-shadow button-outline cursor-pointer select-none rounded bg-white p-2 leading-tight text-gray-800 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-75;
+  }
+
+  .button-primary {
+    @apply bg-green-400 p-2 font-bold text-white hover:bg-green-500;
+  }
+
+  .form-input {
+    @apply button-outline rounded border-none bg-white px-3 py-2;
+  }
+
+  .form-input:focus {
+    @apply shadow-outline border-none;
+  }
+}
+
+@layer utilities {
+  .transition-100 {
+    @apply transition-all duration-150;
+  }
+
+  .shadow-outline {
+    @apply ring ring-green-500 ring-opacity-50;
+  }
+
+  .focus\:shadow-outline:focus {
+    @apply shadow-outline;
+  }
+
+  .button-shadow {
+    @apply transition-100 shadow hover:shadow-md;
+  }
+
+  .button-outline {
+    @apply focus:shadow-outline outline-none focus:outline-none;
+  }
+
+  .bg-gradient-pink-orange {
+    @apply bg-pink-400 bg-gradient-to-r from-pink-400 to-orange-300;
+  }
+
+  .bullet-xl {
+    @apply relative pl-5 text-left text-xl;
+  }
+
+  .bullet-xl:before {
+    content: "";
+    position: absolute;
+    background-color: #cbd5e0;
+    border-radius: 50%;
+    width: 0.375em;
+    height: 0.375em;
+    top: calc(0.875em - 0.1875em);
+    left: 0.25em;
+  }
+
+  @screen lg {
+    .lg\:items-normal {
+      align-items: normal;
+    }
+  }
+}
+
+.input__input {
+  @apply focus:outline-none focus:ring-transparent;
+}
+
+.input__control {
+  @apply form-input flex flex-row rounded border-1 border-transparent;
+}
+
+.input__control--is-focused {
+  @apply shadow-outline border-none outline-none;
+}
+
+.input__placeholder {
+  @apply text-gray-500;
+}
+
+.input__multi-value__label {
+  user-select: none;
+}
+
+.input__indicator,
+.input__clear-indicator,
+.input__dropdown-indicator,
+.input__multi-value__remove {
+  @apply cursor-pointer;
 }
