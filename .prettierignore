@@ -1,0 +1,6 @@
+.next
+.vscode
+build
+coverage
+node_modules
+public
