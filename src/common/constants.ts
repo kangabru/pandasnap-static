@@ -49,7 +49,7 @@ export const IDS = {
   section1: "section-1",
   snapAnElement: "snap-an-element",
   section2: "section-2",
-  // section3: 'section-3',
+  section3: "section-3",
 
   // idSnapPage: "root-snap-page",
   // idSnapElem: "root-snap-elem",

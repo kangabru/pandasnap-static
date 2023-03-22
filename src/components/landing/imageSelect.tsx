@@ -3,7 +3,7 @@
 import { useState } from "react"
 import useMeasure from "react-use-measure"
 import { useOnEscape } from "../../common/utils"
-import { ImageFormMode } from "./imageForm"
+import { SnappedImage } from "./imageForm"
 import {
   clamp,
   CropUi,
@@ -21,19 +21,19 @@ import {
   setImage,
 } from "./index"
 
-type ImageItem = { mode: ImageFormMode; url: string; color: string }
+type ImageItem = { mode: SnappedImage; url: string; color: string }
 
 export default function ImageSelect() {
   const [containerRef, bounds] = useMeasure({ scroll: true })
 
   const items: ImageItem[] = [
-    { mode: ImageFormMode.elem1, url: imageSelect1, color: "#fbd38d" }, // orange-300
-    { mode: ImageFormMode.elem2, url: imageSelect2, color: "#d6bcfa" }, // purple-300
-    { mode: ImageFormMode.elem3, url: imageSelect3, color: "#6de89c" }, // green-300
+    { mode: SnappedImage.elem1, url: imageSelect1, color: "#fbd38d" }, // orange-300
+    { mode: SnappedImage.elem2, url: imageSelect2, color: "#d6bcfa" }, // purple-300
+    { mode: SnappedImage.elem3, url: imageSelect3, color: "#6de89c" }, // green-300
   ]
 
-  const [modeHover, setModeHover] = useState<ImageFormMode>()
-  const [mode, setMode] = useState<ImageFormMode>()
+  const [modeHover, setModeHover] = useState<SnappedImage>()
+  const [mode, setMode] = useState<SnappedImage>()
   const isSelected = !!mode
 
   const hoverOrSelectedItem = items.find((x) =>
@@ -41,13 +41,13 @@ export default function ImageSelect() {
   )
 
   const [hovered, setHovered] = useState<HTMLDivElement>()
-  const hover = (mode: ImageFormMode) => (e: any) => {
+  const hover = (mode: SnappedImage) => (e: any) => {
     setModeHover(mode)
     setHovered(e.target as HTMLDivElement)
   }
 
   const cancel = () => setMode(undefined)
-  const clickOne = (mode: ImageFormMode) => (e: any) => {
+  const clickOne = (mode: SnappedImage) => (e: any) => {
     e.stopPropagation()
     setMode(mode)
   }

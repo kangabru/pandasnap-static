@@ -61,3 +61,7 @@ export function useBoolState(
 export function Wait(timeout: number, ...args: any[]) {
   return new Promise((accept) => setTimeout(accept, timeout, ...args))
 }
+
+export function isOneOf<T>(value: T, items: T[]) {
+  return items.some((item) => value === item)
+}

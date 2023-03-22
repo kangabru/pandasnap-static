@@ -7,16 +7,18 @@ import { SpinnerButton, StatefulInputWithRef } from "../common/common"
 import TagSelect from "../tags/tagSelect"
 import { scrollToElement } from "./index"
 
-export enum ImageFormMode {
+export enum SnappedImage {
   landingStripe,
   landingPanda,
   elem1,
   elem2,
   elem3,
 }
-export type ImageFormProps = { mode?: ImageFormMode }
 
-export default function ImageForm(props: ImageFormProps) {
+export default function ImageForm(props: {
+  snapped?: SnappedImage
+  onSave: (i: SnappedImage) => void
+}) {
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
 
@@ -27,21 +29,21 @@ export default function ImageForm(props: ImageFormProps) {
   let defaultTitle = ""
   const selectedTags: Tag[] = []
 
-  switch (props.mode) {
-    case ImageFormMode.landingPanda:
+  switch (props.snapped) {
+    case SnappedImage.landingPanda:
       defaultTitle = "Snap inception"
       selectedTags.push(tagLanding)
       break
-    case ImageFormMode.elem1:
+    case SnappedImage.elem1:
       defaultTitle = "I should use more colour like this"
       selectedTags.push(tagUi)
       break
-    case ImageFormMode.elem2:
+    case SnappedImage.elem2:
       defaultTitle =
         "Look at the subtle off-white coloring. The tasteful thickness of it."
       selectedTags.push(tagHeader)
       break
-    case ImageFormMode.elem3:
+    case SnappedImage.elem3:
       defaultTitle = "Why aren't more sites dark like this?"
       selectedTags.push(tagHeader)
       break
@@ -57,7 +59,9 @@ export default function ImageForm(props: ImageFormProps) {
     setTimeout(() => {
       setLoading(false)
       setSaved(true)
-      Wait(500).then(() => scrollToElement(IDS.section2))
+      props.onSave(props.snapped as any)
+      Wait(500).then(() => scrollToElement(IDS.section3))
+      Wait(1500).then(() => setSaved(false))
     }, 1000)
   }
 

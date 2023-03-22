@@ -1,23 +1,32 @@
 "use client"
 
-import Image from "next/image"
+import Image, { StaticImageData } from "next/image"
 
 import iconChrome from "../../public/icons/chrome.png"
 import iconFirefox from "../../public/icons/firefox.png"
 import iconLogo from "../../public/icons/logo.png"
 
-import imagePromoCover from "../../public/images/promo-cover.jpg"
 import imageDemo1 from "../../public/images/demo1.jpg"
 import imageDemo2 from "../../public/images/demo2.jpg"
 import imageDemo3 from "../../public/images/demo3.jpg"
-import imageLandingStripe from "../../public/images/landing.jpg"
 import imageLandingPanda from "../../public/images/landing-panda.jpg"
+import imageLandingStripe from "../../public/images/landing.jpg"
+import imagePromoCover from "../../public/images/promo-cover.jpg"
 
 import ClientOnly from "@/common/client-only"
 import { IDS } from "@/common/constants"
 import { scrollToElement } from "@/components/landing"
-import ImageForm, { ImageFormMode } from "@/components/landing/imageForm"
+import ImageForm, { SnappedImage } from "@/components/landing/imageForm"
 import { useEffect, useMemo, useState } from "react"
+import { isOneOf } from "@/common/utils"
+
+let ImageSnapMap = {
+  [SnappedImage.elem1]: imageDemo1,
+  [SnappedImage.elem2]: imageDemo2,
+  [SnappedImage.elem3]: imageDemo3,
+  [SnappedImage.landingStripe]: imageLandingStripe,
+  [SnappedImage.landingPanda]: imageLandingPanda,
+}
 
 export default function LandingPage() {
   return (
@@ -121,11 +130,13 @@ function Header(props: { isLanding?: boolean }) {
   )
 }
 
-type SetImage = (image: ImageFormMode) => void
+type SetImage = (image: SnappedImage) => void
 
 function Interactive() {
-  let [imageSnapped, setImageSnapped] = useState<ImageFormMode>()
-  let [imageSaved, setImageSaved] = useState<ImageFormMode>()
+  let [imageSnapped, setImageSnapped] = useState<SnappedImage>(
+    SnappedImage.landingStripe
+  )
+  let [imageSaved, setImageSaved] = useState<SnappedImage>()
 
   return (
     <ClientOnly>
@@ -133,9 +144,9 @@ function Interactive() {
       <BrowserExtensions />
       <SelectAnElement onSnap={setImageSnapped} />
       <ArrowBreak />
-      <Step2 mode={imageSnapped} />
+      <Step2 snapped={imageSnapped} onSave={setImageSaved} />
       <Step3 />
-      <FinalSnap />
+      <FinalSnap saved={imageSaved} />
     </ClientOnly>
   )
 }
@@ -204,7 +215,7 @@ function Step1({ onSnap }: { onSnap: SetImage }) {
   const [showFlash, setShowFlash] = useState(false)
 
   const flashOn = () => {
-    onSnap(ImageFormMode.landingPanda)
+    onSnap(SnappedImage.landingPanda)
     setShowFlash(true)
   }
   const flashOff = () => {
@@ -414,29 +425,21 @@ function ArrowBreak() {
   )
 }
 
-function Step2(props: { mode: ImageFormMode | undefined }) {
-  let imageSrc = useMemo(() => {
-    return {
-      [ImageFormMode.elem1]: imageDemo1,
-      [ImageFormMode.elem2]: imageDemo2,
-      [ImageFormMode.elem3]: imageDemo3,
-      [ImageFormMode.landingStripe]: imageLandingStripe,
-      [ImageFormMode.landingPanda]: imageLandingPanda,
-    }[props.mode ?? ImageFormMode.landingStripe]
-  }, [props.mode])
-
-  console.log("src", imageSrc)
+function Step2(props: {
+  snapped: SnappedImage | undefined
+  onSave: (i: SnappedImage) => void
+}) {
+  let imageSrc = useSnappedImageSrc(props.snapped) || imageLandingStripe
 
   return (
     <section className="col container pt-20 lg:flex-row-reverse lg:justify-evenly lg:space-y-0">
       <div className="col max-w-lg flex-1 items-center justify-center space-y-3 text-center lg:ml-5 lg:items-start lg:text-left">
-        <span
-          id={IDS.section2}
-          className="row h-8 w-8 justify-center rounded-full bg-green-400 p-2 text-lg font-bold text-white"
-        >
+        <span className="row h-8 w-8 justify-center rounded-full bg-green-400 p-2 text-lg font-bold text-white">
           2
         </span>
-        <h2 className="text-4xl">Save for the future</h2>
+        <h2 id={IDS.section2} className="text-4xl">
+          Save for the future
+        </h2>
         <p className="text-xl">
           Designing from scratch is <i>hard</i>. Build up a collection of
           inspiring designs specific to you.
@@ -477,7 +480,7 @@ function Step2(props: { mode: ImageFormMode | undefined }) {
         <div className="pointer-events-auto max-h-full rounded-lg bg-gray-200 shadow-lg">
           <div className="col mb-0 h-100 space-y-3 overflow-hidden p-5">
             <ClientOnly>
-              <ImageForm mode={props.mode} />
+              <ImageForm snapped={props.snapped} onSave={props.onSave} />
             </ClientOnly>
             <div className="scrollbar h-full overflow-hidden overflow-y-auto overscroll-contain rounded">
               <Image
@@ -518,7 +521,7 @@ function Step3() {
         <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-green-400 p-2 text-xl font-bold text-white">
           3
         </span>
-        <h2 id="scroll-3" className="text-4xl">
+        <h2 className="text-4xl" id={IDS.section3}>
           Browse snaps for inspiration
         </h2>
 
@@ -551,7 +554,13 @@ function Step3() {
   )
 }
 
-function FinalSnap() {
+function FinalSnap(props: { saved: SnappedImage | undefined }) {
+  const imgSrc = useSnappedImageSrc(props.saved)
+  const isLarge = isOneOf(props.saved, [
+    SnappedImage.landingPanda,
+    SnappedImage.landingStripe,
+  ])
+
   return (
     <section className="mt-10">
       <div className="row h-16 justify-center space-x-4 px-4 text-center text-lg">
@@ -584,24 +593,26 @@ function FinalSnap() {
         </div>
         <div className="col h-full">
           <div className="h-full w-40 rounded bg-yellow-400 p-1">
-            <Image
-              alt=""
-              id="image-saved-landing"
-              className="h-full w-full rounded-sm object-cover object-top"
-              src={imageLandingStripe}
-            />
+            {imgSrc && isLarge && (
+              <Image
+                alt=""
+                className="h-full w-full rounded-sm object-cover object-top"
+                src={imgSrc}
+              />
+            )}
           </div>
         </div>
         <div className="col h-full space-y-4 py-4">
           <div className="w-40 flex-1 rounded bg-purple-400 p-1">
-            <Image
-              alt=""
-              id="image-saved-other"
-              className="hidden h-full w-full rounded-sm object-cover object-top"
-              src={iconLogo}
-              width="100"
-              height="100"
-            />
+            {imgSrc && !isLarge && (
+              <Image
+                alt=""
+                className="hidden h-full w-full rounded-sm object-cover object-top"
+                src={imgSrc}
+                width="100"
+                height="100"
+              />
+            )}
           </div>
           <div className="w-40 flex-2 rounded bg-red-400"></div>
         </div>
@@ -678,5 +689,14 @@ function Flash({ onFinish }: { onFinish: () => void }) {
       className="fixed inset-0 z-max bg-white transition-opacity duration-2000"
       style={{ opacity }}
     ></div>
+  )
+}
+
+function useSnappedImageSrc(
+  image: SnappedImage | undefined
+): StaticImageData | undefined {
+  return useMemo(
+    () => (image === undefined ? undefined : ImageSnapMap[image]),
+    [image]
   )
 }
