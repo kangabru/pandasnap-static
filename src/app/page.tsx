@@ -23,6 +23,7 @@ import ImageForm, {
 import { useEffect, useMemo, useState } from "react"
 import { isOneOf, Wait } from "@/common/utils"
 import ImageSelect from "@/components/landing/imageSelect"
+import Link from "next/link"
 
 let ImageSnapMap = {
   [SnappedImage.elem1]: imageDemo1,
@@ -35,57 +36,40 @@ let ImageSnapMap = {
 export default function LandingPage() {
   return (
     <main className="w-full border-b-8 border-green-200 bg-white">
-      <Header isLanding />
-      <div className="h-20 bg-indigo-100 sm:h-32"></div>
+      <Header />
+      <div className="h-28 bg-indigo-100 sm:h-40"></div>
       <Banner />
-
       <Interactive />
-
       <Footer />
       <MadeByFlaticon />
     </main>
   )
 }
 
-function Header(props: { isLanding?: boolean }) {
-  return props.isLanding ? (
-    <header className="fixed top-0 z-50 w-full border-t-4 border-green-200">
+function Header() {
+  return (
+    <header className="fixed top-0 z-50 w-full">
+      {Disclaimer()}
       <div className="row justify-between bg-white py-2 px-4 text-lg shadow-lg sm:py-3 sm:px-6 sm:text-xl">
-        <a
-          href="{% url 'home' %}"
-          className="row button-outline group space-x-4 rounded px-3 py-2"
-        >
+        <div className="row button-outline group space-x-4 rounded px-3 py-2">
           <Image
             src={iconLogo}
             alt="Logo"
-            className="pointer-events-none h-6 w-8 scale-100 transform group-hover:scale-105 sm:h-8 sm:w-10 lg:h-10 lg:w-12"
+            className="pointer-events-none h-6 w-8 scale-100 transform sm:h-8 sm:w-10 lg:h-10 lg:w-12"
           />
 
           <span className="hidden whitespace-nowrap sm:block md:text-2xl lg:text-3xl">
             Panda Snap
           </span>
-        </a>
+        </div>
 
         <div className="row space-x-3 sm:space-x-5">
-          <a
-            href="{% url 'about' %}"
+          <Link
+            href="/dashboard"
             className="font-semibold text-gray-800 hover:underline"
           >
-            About
-          </a>
-
-          <a
-            href="{% url 'home' %}"
-            className="button-outline transform rounded text-gray-600 transition-all duration-100 hover:scale-105 hover:text-gray-700"
-          >
-            <svg
-              className="h-6 sm:h-8 lg:h-10"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
-            </svg>
-          </a>
+            Dashboard
+          </Link>
         </div>
       </div>
       <svg
@@ -97,40 +81,19 @@ function Header(props: { isLanding?: boolean }) {
         <path d="M 0 2 Q 0.5 0 1 2 L 1 0 L 0 0 Z"></path>
       </svg>
     </header>
-  ) : (
-    <header className="top-0 z-50 mb-6 w-full border-t-4 border-green-200">
-      <div className="bg-white shadow-md">
-        <div className="row container justify-between px-4 py-2 text-lg leading-none sm:px-6 sm:py-4 sm:text-xl">
-          <a
-            href="{% url 'home' %}"
-            className="row button-outline group space-x-2 rounded p-2"
-          >
-            <Image
-              src={iconLogo}
-              alt="Logo"
-              className="pointer-events-none h-6 w-8 scale-100 transform group-hover:scale-105 sm:h-8 sm:w-10 lg:h-10 lg:w-12"
-            />
-            <span className="hidden whitespace-nowrap sm:block lg:text-2xl">
-              Panda Snap
-            </span>
-          </a>
+  )
+}
 
-          <div className="row space-x-2">
-            <nav id="root-profile" className="relative z-50">
-              <div className="h-10 w-10 rounded-full bg-gray-400"></div>
-            </nav>
-          </div>
-        </div>
+export function Disclaimer() {
+  return (
+    <div className="row w-full bg-green-200 p-2">
+      <div className="row mx-auto w-full max-w-screen-lg justify-center text-center">
+        <p>
+          PandaSnap has shut down. What you see is now a demo page used as a
+          portfolio project.
+        </p>
       </div>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 1 1 1"
-        preserveAspectRatio="none"
-        className="h-px w-full fill-current text-white sm:h-1 lg:h-2"
-      >
-        <path d="M 0 2 Q 0.5 0 1 2 L 1 0 L 0 0 Z"></path>
-      </svg>
-    </header>
+    </div>
   )
 }
 
@@ -175,12 +138,12 @@ function Banner() {
         </p>
 
         <div className="col mt-10 space-y-4">
-          <a
-            href="{% url 'signup' %}"
+          <Link
+            href="/dashboard"
             className="button button-primary row button-shadow button-outline justify-center space-x-3 rounded-lg py-3 px-4 text-2xl font-bold text-white"
           >
             <span className="text-2xl sm:text-3xl">Get started</span>
-          </a>
+          </Link>
           <p className="mt-4 text-xl text-gray-800">
             Unlimited lifetime snaps starting at $0
           </p>
@@ -343,30 +306,28 @@ function BrowserExtensions() {
       </p>
 
       <div className="row mt-5 flex-wrap justify-center">
-        <a
-          target="_blank"
-          className="row button bg-white-200 mx-2 mt-2 block space-x-1 whitespace-nowrap rounded-lg py-3 px-4 text-xl"
-          href="{% url extension-chrome %}"
+        <Link
+          className="row button bg-white-200 mx-2 mt-2 block space-x-1.5 whitespace-nowrap rounded-lg py-3 px-4 text-xl"
+          href="/extension"
         >
           <Image
             alt=""
-            className="pointer-events-none -mt-1 inline h-6 w-6"
+            className="pointer-events-none -ml-1 -mt-1 inline h-6 w-6"
             src={iconChrome}
           />
           <span>Chrome</span>
-        </a>
-        <a
-          target="_blank"
-          className="row button bg-white-200 mx-2 mt-2 block space-x-1 whitespace-nowrap rounded-lg py-3 px-4 text-xl"
-          href="{% url extension-firefox %}"
+        </Link>
+        <Link
+          className="row button bg-white-200 mx-2 mt-2 block space-x-1.5 whitespace-nowrap rounded-lg py-3 px-4 text-xl"
+          href="/extension"
         >
           <Image
             alt=""
-            className="pointer-events-none -mt-1 inline h-6 w-6"
+            className="pointer-events-none -ml-1 -mt-1 inline h-6 w-6"
             src={iconFirefox}
           />
           <span>Firefox</span>
-        </a>
+        </Link>
       </div>
     </section>
   )
@@ -536,12 +497,12 @@ function Step3({ reset }: { reset: () => void }) {
           Create <b>better</b> designs and <b>save time</b> by emulating them.
         </p>
         <div className="pt-4 pb-6">
-          <a
-            href="{% url 'signup' %}"
+          <Link
+            href="/dashboard"
             className="button button-primary row button-shadow button-outline justify-center space-x-3 rounded-lg py-3 px-5 text-2xl font-bold text-white"
           >
             <span className="text-3xl sm:text-4xl">Join now!</span>
-          </a>
+          </Link>
           <p className="mt-4 text-xl text-gray-800">
             It&apos;s free! Unlimited lifetime snaps.
           </p>
@@ -637,17 +598,16 @@ function FinalSnap(props: { saved: SnappedImage | undefined }) {
 function MadeByFlaticon() {
   return (
     <p className="mb-10 pt-3 text-center text-gray-600">
-      Icons made by{" "}
+      Icons made by
       <a
         className="link"
         href="https://www.flaticon.com/authors/freepik"
         title="Freepik"
       >
         Freepik
-      </a>{" "}
-      from{" "}
+      </a>
+      from
       <a className="link" href="https://www.flaticon.com/" title="Flaticon">
-        {" "}
         www.flaticon.com
       </a>
     </p>
@@ -666,15 +626,6 @@ function Footer() {
           className="button-outline rounded p-1 text-green-500 hover:underline"
         >
           kangabru
-        </a>
-      </p>
-      <a href="legal"></a>
-      <p className="row justify-center space-x-8">
-        <a href="{% url 'privacy' %}" className="link">
-          Privacy Policy
-        </a>
-        <a href="{% url 'terms' %}" className="link">
-          Terms of Service
         </a>
       </p>
     </footer>

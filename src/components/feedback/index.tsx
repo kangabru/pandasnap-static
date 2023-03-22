@@ -105,22 +105,18 @@ function InfoMenu(props: { openFeedback: () => void }) {
   return (
     <div className="col overflow-hidden rounded-lg bg-white shadow-lg">
       <a href={urls.about} className={classes}>
-        {" "}
-        <span>🧔</span> <span>About</span>{" "}
+        <span>🧔</span> <span>About</span>
       </a>
       <a href={urls.whatsNew} className={classes}>
-        {" "}
-        <span>🎁</span> <span>What&apos;s new</span>{" "}
+        <span>🎁</span> <span>What&apos;s new</span>
       </a>
       <a href={urls.howTo} className={classes}>
-        {" "}
-        <span>🤔</span> <span>How-to guide</span>{" "}
+        <span>🤔</span> <span>How-to guide</span>
       </a>
       <button
         onClick={props.openFeedback}
         className={join(classes, "border-t-2 border-green-300")}
       >
-        {" "}
         <span>💬</span> <span className="font-bold">Feedback</span>
       </button>
     </div>
