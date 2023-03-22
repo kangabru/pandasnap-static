@@ -59,12 +59,12 @@ export function ContentEdit(props: FormInfo<Content>) {
     <div className="col w-full items-start space-y-2">
       <form
         className="row w-full justify-between space-x-2"
-        onSubmit={(e) => submit(e, "PATCH")}
+        onSubmit={(e) => submit(e as any)}
       >
         <label className="flex-1 leading-none">
           <StatefulInputWithRef
             initValue={props.state.name}
-            ref={inputRef}
+            ref={inputRef as any}
             name="name"
             type="text"
             placeholder="Title"

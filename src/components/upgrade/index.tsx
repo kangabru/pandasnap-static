@@ -62,7 +62,7 @@ function Animation() {
         <path
           fillRule="evenodd"
           d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-          clip-rule="evenodd"
+          clipRule="evenodd"
         ></path>
       </svg>
 
@@ -79,7 +79,7 @@ function Animation() {
         <path
           fillRule="evenodd"
           d="m3.2-5.171a1 1 0 00-1.3 1.3l4 10a1 1 0 001.823.075l1.38-2.759 3.018 3.02a1 1 0 001.414-1.415l-3.019-3.02 2.76-1.379a1 1 0 00-.076-1.822l-10-4z"
-          clip-rule="evenodd"
+          clipRule="evenodd"
         ></path>
       </animated.svg>
     </div>

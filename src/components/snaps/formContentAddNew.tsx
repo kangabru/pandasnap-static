@@ -1,5 +1,6 @@
-import { useState } from "react"
-import { KeyCode } from "../../common/constants"
+import { useFocusInputRef } from "@/common/utils"
+import { useLayoutEffect, useRef, useState } from "react"
+import { KeyCode, urls } from "../../common/constants"
 import {
   CancelButton,
   Errors,
@@ -7,8 +8,10 @@ import {
   icons,
   SaveButton,
   StatefulInputWithRef,
-  TagSelect
+  TagSelect,
 } from "../common/common"
+import { useForm } from "../common/formUtils"
+import { useRandomMessage } from "../message"
 
 enum FormState {
   Closed,
@@ -18,14 +21,21 @@ enum FormState {
 
 /** Provides state managers for the add form. This will render the popup form but won't doesn't render button to open the form. */
 export function useContentAddForm(
-  onSuccess?: () => void
+  onSuccess?: (data?: FormData) => void
 ): [JSX.Element, FormState, () => void, () => void] {
   const [state, setState] = useState(FormState.Closed)
   const open = () => setState(FormState.Open)
   const close = () => setState(FormState.Closed)
-  const onSave = () => setState(FormState.Saved)
+
+  const [formData, setResponse] = useState<FormData>()
+
+  const onSave = (e: any) => {
+    const formData = new FormData(e.target)
+    setResponse(formData)
+    setState(FormState.Saved)
+  }
   const onSavedClose = () => {
-    onSuccess && onSuccess()
+    onSuccess && onSuccess(formData)
     close()
   }
 
@@ -33,14 +43,16 @@ export function useContentAddForm(
     state == FormState.Saved ? (
       <SavedPopup onClose={onSavedClose} />
     ) : state == FormState.Open ? (
-      <AddForm cancel={close} onSuccess={onSave} />
+      <AddForm cancel={close} onSuccess={onSave as any} />
     ) : (
-      <>
+      <></>
     )
   return [element, state, open, close]
 }
 
-export function ContentAddFormButton(props: { onSuccess?: () => void }) {
+export function ContentAddFormButton(props: {
+  onSuccess?: (e?: FormData) => void
+}) {
   const [element, state, open] = useContentAddForm(props.onSuccess)
   return state == FormState.Closed ? (
     <AddButton onClick={open} />
@@ -102,12 +114,12 @@ function AddForm(props: { cancel: () => void; onSuccess: () => void }) {
     <FloatingWindow onClose={props.cancel} canClose>
       <form
         className="col max-h-full w-full items-start space-y-2 p-3"
-        onSubmit={(e) => submit(e, "POST")}
+        onSubmit={(e) => submit(e as any)}
       >
         <div className="row w-full justify-between space-x-2">
           <label className="flex-1 leading-none">
             <StatefulInputWithRef
-              ref={titleRef}
+              ref={titleRef as any}
               name="name"
               type="text"
               placeholder="Title"
@@ -144,7 +156,7 @@ function ImageSelect(props: {
   const openFileSelect = () => {
     props.openFileSelectOnStart && ref.current?.click()
   }
-  useLayoutEffect(openFileSelect, [])
+  useLayoutEffect(openFileSelect, [props.openFileSelectOnStart])
 
   const loadImage = async (e: any) => {
     const target = e.target as HTMLInputElement
@@ -162,18 +174,18 @@ function ImageSelect(props: {
   return (
     <div className="col scrollbar w-full justify-center overflow-y-auto overscroll-contain">
       <label
-        for="id_image"
+        htmlFor="id_image"
         tabIndex={props.tabIndex}
         className="scrollbar cursor-pointer overflow-hidden overflow-y-auto overscroll-contain rounded-lg border-0 border-green-300 outline-none focus:border-3"
         onKeyDown={(e) => e.keyCode == KeyCode.enter && openFileSelect()}
       >
         {image ? (
-          <img className="pointer-events-none w-full" src={image} />
+          <img alt="" className="pointer-events-none w-full" src={image} />
         ) : (
           icons.image("w-40 max-h-full opacity-50")
         )}
         <input
-          ref={ref}
+          ref={ref as any}
           id="id_image"
           type="file"
           name="image"

@@ -1,16 +1,24 @@
-import { useContext, useEffect, useState } from "react"
+import NextImage from "next/image"
+import { createContext, useContext, useEffect, useState } from "react"
 import { animated, config, interpolate, useTransition } from "react-spring"
 import useMeasure from "react-use-measure"
 import create from "zustand"
-import { Content, imageUrls, Tag, urls } from "../../common/constants"
+import {
+  Content,
+  imageUrls,
+  TagUuid as Tag,
+  urls,
+} from "../../common/constants"
 import {
   join,
   useBoolState,
   useDocumentListener,
   useOnEscape,
+  Wait,
 } from "../../common/utils"
-import { ClickProtector, StatefulInput } from "../common/common"
+import { ClickProtector, StatefulInputWithRef } from "../common/common"
 import { searchTerms, useRandomMessage } from "../message"
+import { dataSnaps, dataTags } from "./data"
 import { ContentAddFormButton, useContentAddForm } from "./formContentAddNew"
 
 enum TagLoadState {
@@ -25,7 +33,7 @@ enum SnapLoadState {
 
 /** Filter state to manage snap search and filtering */
 type Filter = {
-  tagMap: { [uuid: string]: Tag } // uuid: Tag
+  tagMap: Record<string, Tag>
   tagIdsSelected: Set<string> // uuid
   getTags: (id?: string[]) => Tag[]
   getTagsSelected: () => Tag[]
@@ -38,9 +46,9 @@ type Filter = {
 
   snaps: ContentImage[]
   snapLoadState: SnapLoadState
-  nextUrl?: string
+  nextUrl?: number
   getNext: () => void
-  loadSnaps: (currentSnaps?: ContentImage[], url?: string) => void
+  loadSnaps: (currentSnaps?: ContentImage[]) => void
 }
 
 /** zustand state for filter management  */
@@ -63,17 +71,12 @@ const useFilter = create<Filter>(
       tagLoadState: TagLoadState.None,
       loadTags: async () => {
         set({ tagLoadState: TagLoadState.Loading })
-        // axios
-        //   .list<Tag>(urls.tagList, { params: { page_size: 100 } })
-        //   .then((r) => {
-        //     if (r.status == 200) {
-        //       const tags = {}
-        //       ;(r.data.results ?? []).forEach((tag) => {
-        //         tags[tag.uuid] = tag
-        //       })
-        //       set({ tagMap: tags, tagLoadState: TagLoadState.Loaded })
-        //     }
-        //   })
+        await Wait(1000)
+        const tags: Record<string, Tag> = {}
+        dataTags.forEach((tag) => {
+          tags[tag.uuid] = tag
+        })
+        set({ tagMap: tags, tagLoadState: TagLoadState.Loaded })
       },
       clickTag: (tag: Tag) =>
         set(({ tagIdsSelected: tagsSelected }) => {
@@ -95,38 +98,40 @@ const useFilter = create<Filter>(
         const s = get()
         s.snapLoadState == SnapLoadState.None &&
           s.nextUrl &&
-          s.loadSnaps(s.snaps, s.nextUrl)
+          s.loadSnaps(s.snaps)
       },
-      loadSnaps: async (currentSnaps?: ContentImage[], url?: string) => {
+      loadSnaps: async (currentSnaps?: ContentImage[]) => {
         const state = get()
-        url = url || urls.contentList + getFilterParams(state)
+
+        let params = getFilterParams(state)
         set({
           snaps: currentSnaps ?? [],
           nextUrl: undefined,
           snapLoadState: SnapLoadState.Loading,
         })
-
-        // const response = await axios.list<Content>(url)
-        // const newSnaps = await Promise.all(
-        //   response.data.results?.map(loadContent) ?? []
-        // )
-        // set({ snapLoadState: SnapLoadState.None })
-        // if (response.status == 200)
-        //   set({
-        //     nextUrl: response.data.next as string | undefined,
-        //     snaps: [...(currentSnaps ?? []), ...newSnaps],
-        //   })
+        const nextUrl = state.nextUrl || 0
+        const nextUrlNext = nextUrl + 10
+        await Wait(1000)
+        const snaps = dataSnaps.slice(nextUrl, nextUrlNext)
+        const newSnaps = await Promise.all(snaps.map(loadContent) ?? [])
+        set({ snapLoadState: SnapLoadState.None })
+        set({
+          nextUrl: nextUrlNext < dataSnaps.length ? nextUrlNext : undefined,
+          snaps: [...(currentSnaps ?? []), ...newSnaps],
+        })
       },
     } as Filter)
 )
 
 useFilter.subscribe(
   (s: any) => s.loadSnaps(),
+  // @ts-ignore
   ({ loadSnaps, searchText, tagIdsSelected: tagsSelected }) => ({
     loadSnaps,
     searchText,
     tagsSelected,
   }),
+  // @ts-ignore
   (sOld, sNew: any) =>
     sOld.searchText === sNew.searchText &&
     sOld.tagsSelected.size === sNew.tagsSelected.size
@@ -139,7 +144,28 @@ type MainProps = {
 }
 
 export default function Snaps(props: MainProps) {
-  const reload = useFilter((s) => s.loadSnaps)
+  const addImage = (d: FormData) => {
+    const image = d.get("image") as any
+    if (!image) return
+
+    const reader = new FileReader()
+    reader.readAsDataURL(image)
+    reader.onload = (ie) => {
+      let dataUrl = ie.target?.result
+
+      let snap: Content = {
+        uuid: "" + Math.random(),
+        name: d.get("name") as any,
+        url: d.get("url") as any,
+        image: dataUrl as string,
+        tags: d.getAll("tags") as any,
+      }
+
+      let state = useFilter.getState()
+      useFilter.setState({ snaps: [...state.snaps, snap] })
+    }
+  }
+
   return (
     <PropsContext.Provider value={props}>
       <div className="mx-auto max-w-screen-xl space-y-3">
@@ -148,7 +174,7 @@ export default function Snaps(props: MainProps) {
             <div className="h-6 w-6"></div>
           </div>
           <AdvancedSearchBar />
-          <ContentAddFormButton onSuccess={reload} />
+          <ContentAddFormButton onSuccess={addImage as any} />
         </section>
         <SnapMasonry />
       </div>
@@ -166,7 +192,7 @@ function AdvancedSearchBar() {
 
   const postInput = (newValue: string) => {
     timeoutId && clearTimeout(timeoutId)
-    setTimeoutId(setTimeout(search, 750, newValue))
+    setTimeoutId(setTimeout(search, 750, newValue) as any)
   }
 
   const transitions = useTransition(isOpen, null, {
@@ -196,11 +222,11 @@ function AdvancedSearchBar() {
           <path
             fillRule="evenodd"
             d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-            clip-rule="evenodd"
+            clipRule="evenodd"
           ></path>
         </svg>
 
-        <StatefulInput
+        <StatefulInputWithRef
           postInput={postInput}
           title="Search snaps"
           placeholder={searchMessage}
@@ -266,6 +292,7 @@ function TagRow(props: { mode: TagRowType }) {
     <div className="row w-full flex-wrap justify-center sm:justify-start">
       {tags.map((tag) => (
         <button
+          key={tag.uuid}
           onClick={(e) => {
             e.stopPropagation()
             clickTag(tag)
@@ -286,7 +313,7 @@ function TagRow(props: { mode: TagRowType }) {
               <path
                 fillRule="evenodd"
                 d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                clip-rule="evenodd"
+                clipRule="evenodd"
               ></path>
             </svg>
           )}
@@ -307,7 +334,7 @@ function useTagLoader() {
 
   useEffect(() => {
     tagLoadState == TagLoadState.None && loadTags()
-  }, [])
+  }, [loadTags, tagLoadState])
 
   const isLoading = tagLoadState == TagLoadState.Loading
   const hasTags = Object.keys(tags).length > 0
@@ -319,7 +346,10 @@ function LoadingTags() {
   return (
     <div className="row w-full flex-wrap justify-center sm:justify-start">
       {["w-16", "w-10", "w-12"].map((w) => (
-        <div className={join("m-1 animate-pulse rounded bg-gray-300 py-1", w)}>
+        <div
+          key={w}
+          className={join("m-1 animate-pulse rounded bg-gray-300 py-1", w)}
+        >
           &nbsp;
         </div>
       ))}
@@ -366,7 +396,7 @@ function SnapMasonry() {
   )
   const isLoading = snapLoadState == SnapLoadState.Loading
 
-  useEffect(() => void loadSnaps(), [])
+  useEffect(() => void loadSnaps(), [loadSnaps])
 
   // Hook to manage screen size changes
   const [bind, { width: widthCont, bottom }] = useMeasure({ scroll: true })
@@ -434,6 +464,7 @@ function SnapMasonry() {
     ContentInternal,
     React.CSSProperties & { x: number; y: number }
   >(gridItems, (item) => item.uuid, {
+    //@ts-ignore
     from: ({ x, y, width, height }) => ({
       x,
       y: y + 50,
@@ -441,8 +472,11 @@ function SnapMasonry() {
       height,
       opacity: 0,
     }),
+    //@ts-ignore
     enter: ({ x, y, width, height }) => ({ x, y, width, height, opacity: 1 }),
+    //@ts-ignore
     update: ({ x, y, width, height }) => ({ x, y, width, height }),
+    //@ts-ignore
     leave: ({ x, y, width, height }) => ({
       x,
       y: y - 50,
@@ -451,7 +485,7 @@ function SnapMasonry() {
       opacity: 0,
     }),
     trail: 25,
-  })
+  } as any)
 
   const maxHeight = Math.max(...heights)
   const maxWidth = snaps.length
@@ -537,7 +571,7 @@ function SnapLoadUi(props: { isLoading: boolean }): JSX.Element {
     from: { y: 50, opacity: 0 },
     enter: { y: 0, opacity: 1 },
     leave: { y: -50, opacity: 0 },
-  })
+  } as any)
 
   const className = "rounded w-full sm:w-40 m-4"
   return (
@@ -575,7 +609,7 @@ function NoSnapContainer(props: { children: JSX.Element | JSX.Element[] }) {
         <path
           fillRule="evenodd"
           d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-          clip-rule="evenodd"
+          clipRule="evenodd"
         ></path>
       </svg>
       <div className="space-y-2 text-center text-xl text-gray-700">
@@ -602,12 +636,12 @@ function NoSnapState() {
 /** Used when the user hasn't taken any snap yet. */
 function EmptyState() {
   const context = useContext(PropsContext)
-  const reload = useFilter((s) => s.loadSnaps)
-  const [addForm, , openAddForm] = useContentAddForm(reload)
+  const reset = useFilter((s) => s.loadSnaps)
+  const [addForm, , openAddForm] = useContentAddForm(reset as any)
 
   return (
     <NoSnapContainer>
-      <p>You haven't taken snap yet.</p>
+      <p>You haven&apos;t taken snap yet.</p>
       <p>Get the extension for the best experience.</p>
 
       <div className="row flex-wrap justify-center py-4">
@@ -615,9 +649,10 @@ function EmptyState() {
           className="button bg-white-200 mx-2 mt-2 block space-x-2 whitespace-nowrap rounded-lg py-3 px-4 text-xl"
           href={urls.extension}
         >
-          <img
+          <NextImage
+            alt=""
             className="pointer-events-none -mt-1 mr-1 inline h-6"
-            src={context.imageChrome}
+            src={context.imageChrome as any}
           />
           <span>Chrome extension</span>
         </a>
@@ -625,9 +660,10 @@ function EmptyState() {
           className="button bg-white-200 mx-2 mt-2 block space-x-2 whitespace-nowrap rounded-lg py-3 px-4 text-xl"
           href={urls.extensionFirefox}
         >
-          <img
+          <NextImage
+            alt=""
             className="pointer-events-none -mt-1 mr-1 inline h-6"
-            src={context.imageFirefox}
+            src={context.imageFirefox as any}
           />
           <span>Firefox extension</span>
         </a>
@@ -653,9 +689,9 @@ function Snap(
   const tags = getTags(snap.tags)
 
   return (
-    <a
+    <div
       title={snap.name}
-      href={urls.viewContent(snap.uuid)}
+      // href={urls.viewContent(snap.uuid)}
       style={{ backgroundImage }}
       className={join(
         "col group relative h-full w-full transform space-y-2 overflow-hidden rounded bg-no-repeat p-2 shadow transition-all duration-100 hover:scale-102 hover:shadow-lg",
@@ -672,11 +708,11 @@ function Snap(
         className="z-10 flex w-full flex-row flex-wrap items-end justify-end space-x-2 opacity-0 transition-opacity duration-100 group-hover:opacity-100"
       >
         {tags.map((t) => (
-          <TagTag name={t.name} />
+          <TagTag key={t.uuid} name={t.name} />
         ))}
       </div>
       {snap.children}
-    </a>
+    </div>
   )
 }
 
@@ -695,7 +731,7 @@ function IconLink(props: { url: string; isVisible: boolean }) {
           fillRule="evenodd"
           d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z"
           strokeWidth="5"
-          clip-rule="evenodd"
+          clipRule="evenodd"
         ></path>
       </svg>
     </a>

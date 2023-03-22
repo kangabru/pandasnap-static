@@ -1,5 +1,7 @@
 "use client"
 
+import ClientOnly from "@/common/client-only"
+import Snaps from "@/components/snaps"
 import Image from "next/image"
 import Link from "next/link"
 import iconLogo from "../../../public/icons/logo.png"
@@ -9,6 +11,9 @@ export default function Dashboard() {
   return (
     <main className="min-h-screen w-full border-b-8 border-green-200 bg-white">
       <Header />
+      <ClientOnly>
+        <Snaps />
+      </ClientOnly>
     </main>
   )
 }
