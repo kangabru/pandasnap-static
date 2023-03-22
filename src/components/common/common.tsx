@@ -168,13 +168,14 @@ type StatefulInputProps = {
   initValue?: string
   postInput?: (value: string) => void
 } & Omit<HtmlAttrsInput, "ref" | "value" | "autofocus" | "onInput">
+
 export function StatefulInput(
   props: StatefulInputProps,
   _ref?: React.Ref<HTMLInputElement>
 ) {
   const { initValue, className, postInput, ...rest } = props
-  const [value, setValue] = useState(initValue)
-  useEffect(() => void setValue(initValue), [initValue])
+  const [value, setValue] = useState(initValue || "")
+  useEffect(() => void setValue(initValue || ""), [initValue])
   return (
     <input
       {...rest}

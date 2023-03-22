@@ -19,9 +19,9 @@ export const dataSnaps: Content[] = [
   },
   {
     uuid: "i2",
-    name: "Cool landing page",
+    name: "Nice heade",
     url: "",
     image: imageUrl,
-    tags: ["1"],
+    tags: ["1", "2"],
   },
 ]

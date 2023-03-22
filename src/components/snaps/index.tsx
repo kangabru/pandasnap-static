@@ -103,16 +103,17 @@ const useFilter = create<Filter>(
       loadSnaps: async (currentSnaps?: ContentImage[]) => {
         const state = get()
 
-        let params = getFilterParams(state)
+        let filteredSnaps = getFilteredSnaps(state)
+        const nextUrl = state.nextUrl || 0
+        const nextUrlNext = nextUrl + 10
+        const snaps = filteredSnaps.slice(nextUrl, nextUrlNext)
+
         set({
           snaps: currentSnaps ?? [],
           nextUrl: undefined,
           snapLoadState: SnapLoadState.Loading,
         })
-        const nextUrl = state.nextUrl || 0
-        const nextUrlNext = nextUrl + 10
         await Wait(1000)
-        const snaps = dataSnaps.slice(nextUrl, nextUrlNext)
         const newSnaps = await Promise.all(snaps.map(loadContent) ?? [])
         set({ snapLoadState: SnapLoadState.None })
         set({
@@ -627,7 +628,7 @@ function NoSnapState() {
       <p className="pt-5 text-left">Some tips:</p>
       <ul>
         <li className="bullet-xl">Ensure all words are spelt correctly</li>
-        <li className="bullet-xl">The title, url, and tag name is searched</li>
+        <li className="bullet-xl">The title and url are searched</li>
       </ul>
     </NoSnapContainer>
   )
@@ -760,14 +761,51 @@ function TagTag(props: { name: string }) {
   )
 }
 
-/** Construct the API url params that filter snaps by the internal filter state. */
-function getFilterParams(filter: Filter): string {
-  const params: string[] = []
+function getFilteredSnaps(state: Filter): Content[] {
+  const snaps: Content[] = []
 
-  filter.searchText && params.push(`search=${filter.searchText}`)
-  for (const uuid of filter.tagIdsSelected) params.push(`tags=${uuid}`)
+  const searchTerms = toWords(state.searchText)
 
-  return params.length ? "?" + params.join("&") : ""
+  for (let snap of dataSnaps) {
+    // Ensure *some* search words match
+    let isSearchMatch = false
+
+    if (searchTerms.length) {
+      const searchableWords = new Set([
+        ...toWords(snap.name),
+        ...toWords(snap.url),
+      ])
+
+      for (let word of searchableWords)
+        for (let term of searchTerms) {
+          if (word.indexOf(term) !== -1) {
+            isSearchMatch = true
+            break
+          }
+          if (isSearchMatch) break
+        }
+    } else {
+      isSearchMatch = true
+    }
+
+    // Match tags
+    let isTagMatch = true
+    const tagIds = new Set(snap.tags)
+    for (const uuid of state.tagIdsSelected) {
+      if (!tagIds.has(uuid)) {
+        isTagMatch = false
+        break
+      }
+    }
+
+    if (isSearchMatch && isTagMatch) snaps.push(snap)
+  }
+
+  return snaps
+}
+
+function toWords(text: string | undefined): string[] {
+  return text ? text.toLowerCase().split(" ") : []
 }
 
 /** Loads image dimensions for the given content as soon as they are available.
