@@ -35,7 +35,7 @@ let ImageSnapMap = {
 export default function LandingPage() {
   return (
     <main className="w-full border-b-8 border-green-200 bg-white">
-      <Header />
+      <Header isLanding />
       <div className="h-20 bg-indigo-100 sm:h-32"></div>
       <Banner />
 
