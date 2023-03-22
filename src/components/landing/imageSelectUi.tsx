@@ -12,20 +12,17 @@ import { useGesture } from "react-with-gesture"
 import { join } from "../../common/utils"
 import { CancelButton, SpinnerButton } from "../common/common"
 
-export type Size = { width: number; height: number }
+type Size = { width: number; height: number }
 export type Dimensions = Size & { left: number; top: number }
-export type DimensionArray = [number, number, number, number]
-export type AbsolutePosition = {
+type DimensionArray = [number, number, number, number]
+type AbsolutePosition = {
   left?: number
   top?: number
   right?: number
   bottom?: number
 }
 
-export const dimsEmpty = { left: 0, top: 0, width: 0, height: 0 }
-
-const ratio = window.devicePixelRatio
-export const cropUiPadding = 10 * ratio
+const cropUiPadding = () => 10 * window.devicePixelRatio
 
 export const opacityMax = 0.4
 
@@ -63,7 +60,7 @@ export function CropUi(props: CropUiProps) {
   const dims = { left, top, width, height } as DimsAnim
 
   useEffect(
-    () => set(getSpring),
+    () => void set(getSpring),
     [
       props.dims.left,
       props.dims.top,
@@ -221,12 +218,13 @@ function Buttons(
 }
 
 export function growDims(dims: Dimensions, grow: boolean): Dimensions {
+  const padding = cropUiPadding()
   return grow
     ? {
-        left: dims.left - cropUiPadding,
-        top: dims.top - cropUiPadding,
-        width: dims.width + cropUiPadding * 2,
-        height: dims.height + cropUiPadding * 2,
+        left: dims.left - padding,
+        top: dims.top - padding,
+        width: dims.width + padding * 2,
+        height: dims.height + padding * 2,
       }
     : dims
 }
@@ -427,15 +425,15 @@ function getButtonPosition(
   bounds: RectReadOnly
 ): AbsolutePosition {
   const winWidth = bounds.width
-
+  const padding = cropUiPadding()
   return {
     top: interpolate(
       [dims.top, dims.height],
-      (top, height) => top + height + cropUiPadding
+      (top, height) => top + height + padding
     ),
     right: interpolate(
       [dims.left, dims.width],
-      (left, width) => winWidth - left - width + cropUiPadding
+      (left, width) => winWidth - left - width + padding
     ),
   }
 }

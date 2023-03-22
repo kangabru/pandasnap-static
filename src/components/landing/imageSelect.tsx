@@ -3,7 +3,7 @@
 import { useState } from "react"
 import useMeasure from "react-use-measure"
 import { useOnEscape } from "../../common/utils"
-import { SnappedImage } from "./imageForm"
+import { SetImage, SnappedImage } from "./imageForm"
 import {
   clamp,
   CropUi,
@@ -11,25 +11,21 @@ import {
   growDims,
   opacityMax,
 } from "./imageSelectUi"
-import {
-  idScroll2,
-  imageSelect1,
-  imageSelect2,
-  imageSelect3,
-  renderImageForm,
-  scrollToElement,
-  setImage,
-} from "./index"
 
-type ImageItem = { mode: SnappedImage; url: string; color: string }
+import imageDemo1 from "../../../public/images/demo1.jpg"
+import imageDemo2 from "../../../public/images/demo2.jpg"
+import imageDemo3 from "../../../public/images/demo3.jpg"
+import Image, { StaticImageData } from "next/image"
 
-export default function ImageSelect() {
+type ImageItem = { mode: SnappedImage; url: StaticImageData; color: string }
+
+export default function ImageSelect(props: { onSave: SetImage }) {
   const [containerRef, bounds] = useMeasure({ scroll: true })
 
   const items: ImageItem[] = [
-    { mode: SnappedImage.elem1, url: imageSelect1, color: "#fbd38d" }, // orange-300
-    { mode: SnappedImage.elem2, url: imageSelect2, color: "#d6bcfa" }, // purple-300
-    { mode: SnappedImage.elem3, url: imageSelect3, color: "#6de89c" }, // green-300
+    { mode: SnappedImage.elem1, url: imageDemo1, color: "#fbd38d" }, // orange-300
+    { mode: SnappedImage.elem2, url: imageDemo2, color: "#d6bcfa" }, // purple-300
+    { mode: SnappedImage.elem3, url: imageDemo3, color: "#6de89c" }, // green-300
   ]
 
   const [modeHover, setModeHover] = useState<SnappedImage>()
@@ -53,9 +49,7 @@ export default function ImageSelect() {
   }
   const clickTwo = (e: any) => {
     e.stopPropagation()
-    mode && renderImageForm(mode)
-    mode && hoverOrSelectedItem && setImage(hoverOrSelectedItem.url)
-    scrollToElement(idScroll2)
+    mode && props.onSave(mode)
     setHovered(undefined)
     setMode(undefined)
   }
@@ -89,15 +83,18 @@ export default function ImageSelect() {
       <div className="row container mx-auto mt-10 flex-wrap justify-center">
         {items.map((i) => (
           <div
-            key={i.url}
+            key={i.mode}
             onClick={clickOne(i.mode)}
             onMouseOver={hover(i.mode)}
             className="m-3 w-full cursor-pointer overflow-hidden rounded-lg border-1 border-gray-400 shadow-lg focus:outline-none sm:w-90"
           >
-            <div
-              style={{ backgroundImage: `url('${i.url}')` }}
-              className="aspect-w-4 aspect-h-3 w-full overflow-hidden rounded-lg bg-cover bg-top"
-            ></div>
+            <div className="aspect-w-4 aspect-h-3 ">
+              <Image
+                alt=""
+                src={i.url}
+                className="w-full overflow-hidden rounded-lg bg-cover bg-top object-cover"
+              />
+            </div>
           </div>
         ))}
       </div>

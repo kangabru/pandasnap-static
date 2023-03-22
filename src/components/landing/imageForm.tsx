@@ -15,9 +15,11 @@ export enum SnappedImage {
   elem3,
 }
 
+export type SetImage = (image: SnappedImage) => void
+
 export default function ImageForm(props: {
   snapped?: SnappedImage
-  onSave: (i: SnappedImage) => void
+  onSave: SetImage
 }) {
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -68,10 +70,10 @@ export default function ImageForm(props: {
   return (
     <>
       <form
-        className="flex w-full flex-col items-end space-y-3 md:flex-row md:items-center md:space-y-0 md:space-x-3"
+        className="grid w-full grid-cols-1 grid-rows-2 gap-3 md:grid-cols-5 md:grid-rows-1"
         onSubmit={save}
       >
-        <label className="w-full leading-none">
+        <label className="w-full leading-none md:col-span-2">
           <StatefulInputWithRef
             name="name"
             type="text"
@@ -81,7 +83,7 @@ export default function ImageForm(props: {
             className="button-outline form-input w-full"
           />
         </label>
-        <div className="row w-full space-x-3">
+        <div className="row w-full space-x-3 md:col-span-3">
           <label className="z-0 flex-1">
             <TagSelect tags={selectedTags} />
           </label>

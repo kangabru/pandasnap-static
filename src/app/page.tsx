@@ -16,9 +16,13 @@ import imagePromoCover from "../../public/images/promo-cover.jpg"
 import ClientOnly from "@/common/client-only"
 import { IDS } from "@/common/constants"
 import { scrollToElement } from "@/components/landing"
-import ImageForm, { SnappedImage } from "@/components/landing/imageForm"
+import ImageForm, {
+  SetImage,
+  SnappedImage,
+} from "@/components/landing/imageForm"
 import { useEffect, useMemo, useState } from "react"
-import { isOneOf } from "@/common/utils"
+import { isOneOf, Wait } from "@/common/utils"
+import ImageSelect from "@/components/landing/imageSelect"
 
 let ImageSnapMap = {
   [SnappedImage.elem1]: imageDemo1,
@@ -130,13 +134,19 @@ function Header(props: { isLanding?: boolean }) {
   )
 }
 
-type SetImage = (image: SnappedImage) => void
-
 function Interactive() {
   let [imageSnapped, setImageSnapped] = useState<SnappedImage>(
     SnappedImage.landingStripe
   )
   let [imageSaved, setImageSaved] = useState<SnappedImage>()
+
+  const reset = () => {
+    scrollToElement(IDS.section1)
+    Wait(1000).then(() => {
+      setImageSnapped(SnappedImage.landingStripe)
+      setImageSaved(undefined)
+    })
+  }
 
   return (
     <ClientOnly>
@@ -145,7 +155,7 @@ function Interactive() {
       <SelectAnElement onSnap={setImageSnapped} />
       <ArrowBreak />
       <Step2 snapped={imageSnapped} onSave={setImageSaved} />
-      <Step3 />
+      <Step3 reset={reset} />
       <FinalSnap saved={imageSaved} />
     </ClientOnly>
   )
@@ -363,8 +373,8 @@ function BrowserExtensions() {
 }
 
 function SelectAnElement({ onSnap }: { onSnap: SetImage }) {
-  let onClick = () => {
-    // onSnap(ImageFormMode.)
+  let onClick: SetImage = (image) => {
+    onSnap(image)
     scrollToElement(IDS.section2)
   }
   return (
@@ -388,8 +398,7 @@ function SelectAnElement({ onSnap }: { onSnap: SetImage }) {
       </div>
 
       <ClientOnly>
-        <button onClick={onClick}>TEMPORARY</button>
-        {/* <ImageSelect onSave={() => scrollToElement(IDS.section2)} /> */}
+        <ImageSelect onSave={onClick} />
       </ClientOnly>
     </section>
   )
@@ -425,10 +434,7 @@ function ArrowBreak() {
   )
 }
 
-function Step2(props: {
-  snapped: SnappedImage | undefined
-  onSave: (i: SnappedImage) => void
-}) {
+function Step2(props: { snapped: SnappedImage | undefined; onSave: SetImage }) {
   let imageSrc = useSnappedImageSrc(props.snapped) || imageLandingStripe
 
   return (
@@ -482,7 +488,7 @@ function Step2(props: {
             <ClientOnly>
               <ImageForm snapped={props.snapped} onSave={props.onSave} />
             </ClientOnly>
-            <div className="scrollbar h-full overflow-hidden overflow-y-auto overscroll-contain rounded">
+            <div className="scrollbar h-full w-full overflow-hidden overflow-y-auto overscroll-contain rounded">
               <Image
                 id="root-image"
                 src={imageSrc}
@@ -497,7 +503,7 @@ function Step2(props: {
   )
 }
 
-function Step3() {
+function Step3({ reset }: { reset: () => void }) {
   return (
     <section className="col container text-center">
       <svg
@@ -540,10 +546,7 @@ function Step3() {
             It&apos;s free! Unlimited lifetime snaps.
           </p>
         </div>
-        <button
-          className="row group cursor-pointer text-xl"
-          onClick={() => scrollToElement(IDS.section1)}
-        >
+        <button className="row group cursor-pointer text-xl" onClick={reset}>
           <span className="group-hover:underline">Play again? Go back to </span>
           <span className="ml-2 -mb-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-green-300 p-1 text-sm font-bold text-white">
             1
@@ -607,7 +610,7 @@ function FinalSnap(props: { saved: SnappedImage | undefined }) {
             {imgSrc && !isLarge && (
               <Image
                 alt=""
-                className="hidden h-full w-full rounded-sm object-cover object-top"
+                className="h-full w-full rounded-sm object-cover object-top"
                 src={imgSrc}
                 width="100"
                 height="100"
