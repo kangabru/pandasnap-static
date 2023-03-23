@@ -1,3 +1,4 @@
+import { join, useDocumentListener, useOnEscape } from "@/common/utils"
 import {
   ButtonHTMLAttributes,
   DetailedHTMLProps,
@@ -10,7 +11,6 @@ import {
   useRef,
   useState,
 } from "react"
-import { join, useDocumentListener, useOnEscape } from "../../common/utils"
 import { useRandomErrorShort, useRandomMessage } from "../message"
 import TagSelectOg from "../tags/tagSelect"
 

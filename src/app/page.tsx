@@ -15,14 +15,14 @@ import imagePromoCover from "../../public/images/promo-cover.jpg"
 
 import ClientOnly from "@/common/client-only"
 import { IDS } from "@/common/constants"
-import { scrollToElement } from "@/components/landing"
+import { scrollToElement } from "@/components/website/landing"
 import ImageForm, {
   SetImage,
   SnappedImage,
-} from "@/components/landing/imageForm"
+} from "@/components/website/landing/imageForm"
 import { useEffect, useMemo, useState } from "react"
 import { isOneOf, Wait } from "@/common/utils"
-import ImageSelect from "@/components/landing/imageSelect"
+import ImageSelect from "@/components/website/landing/imageSelect"
 import Link from "next/link"
 
 let ImageSnapMap = {

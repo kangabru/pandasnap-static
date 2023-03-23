@@ -1,21 +1,16 @@
-import NextImage from "next/image"
-import { createContext, useContext, useEffect, useMemo, useState } from "react"
-import { animated, config, interpolate, useTransition } from "react-spring"
-import useMeasure from "react-use-measure"
-import create from "zustand"
-import {
-  Content,
-  imageUrls,
-  TagUuid as Tag,
-  urls,
-} from "../../common/constants"
+import { Content, imageUrls, TagUuid as Tag, urls } from "@/common/constants"
 import {
   join,
   useBoolState,
   useDocumentListener,
   useOnEscape,
   Wait,
-} from "../../common/utils"
+} from "@/common/utils"
+import NextImage from "next/image"
+import { createContext, useContext, useEffect, useMemo, useState } from "react"
+import { animated, config, interpolate, useTransition } from "react-spring"
+import useMeasure from "react-use-measure"
+import create from "zustand"
 import { ClickProtector, StatefulInputWithRef } from "../common/common"
 import { searchTerms, useRandomMessage } from "../message"
 import { dataSnaps, dataTags } from "./data"

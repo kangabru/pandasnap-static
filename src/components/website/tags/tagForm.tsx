@@ -1,5 +1,5 @@
-import { Tag, urls } from "../../common/constants"
-import { axios, useFocusInputRef } from "../../common/utils"
+import { Tag, urls } from "@/common/constants"
+import { axios, useFocusInputRef } from "@/common/utils"
 import {
   CancelButton,
   DeleteButton,
@@ -7,8 +7,8 @@ import {
   Errors,
   SaveButton,
   StatefulInputWithRef,
-} from "../common/common"
-import { FormInfo, RootInfo, useEntityForm } from "../common/formUtils"
+} from "@/common"
+import { FormInfo, RootInfo, useEntityForm } from "@/common/formUtils"
 
 const url = urls.tag
 

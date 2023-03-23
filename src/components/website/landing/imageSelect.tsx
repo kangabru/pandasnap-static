@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import useMeasure from "react-use-measure"
-import { useOnEscape } from "../../common/utils"
+import { useOnEscape } from "@/common/utils"
 import { SetImage, SnappedImage } from "./imageForm"
 import {
   clamp,
@@ -12,9 +12,9 @@ import {
   opacityMax,
 } from "./imageSelectUi"
 
-import imageDemo1 from "../../../public/images/demo1.jpg"
-import imageDemo2 from "../../../public/images/demo2.jpg"
-import imageDemo3 from "../../../public/images/demo3.jpg"
+import imageDemo1 from "public/images/demo1.jpg"
+import imageDemo2 from "public/images/demo2.jpg"
+import imageDemo3 from "public/images/demo3.jpg"
 import Image, { StaticImageData } from "next/image"
 
 type ImageItem = { mode: SnappedImage; url: StaticImageData; color: string }

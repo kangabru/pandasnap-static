@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react"
-import { urls } from "../../common/constants"
-import { join, useDocumentListener, useOnEscape } from "../../common/utils"
+import { urls } from "@/common/constants"
+import { join, useDocumentListener, useOnEscape } from "@/common/utils"
 import {
   Errors,
   icons,
   SaveButton,
   useResizableTextArea,
-} from "../common/common"
-import { useForm } from "../common/formUtils"
+} from "@/common"
+import { useForm } from "@/common/formUtils"
 
 enum FeedbackType {
   bug = "BG",

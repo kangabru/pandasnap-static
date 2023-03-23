@@ -1,7 +1,6 @@
+import { KeyCode } from "@/common/constants"
+import { useKeyUpEffect, Wait } from "@/common/utils"
 import { useState } from "react"
-import { KeyCode } from "../../common/constants"
-import { useKeyUpEffect, Wait } from "../../common/utils"
-import { useRandomError } from "../message"
 
 type StateInfo<Entity> = {
   state: Entity
@@ -12,8 +11,6 @@ type StateInfo<Entity> = {
 }
 export type RootInfo = { id: string }
 export type FormInfo<Entity> = RootInfo & StateInfo<Entity>
-
-type DjangoForm<Entity> = (props: FormInfo<Entity>) => h.JSX.Element
 
 export function useEntityForm<Entity>(url: string, props: FormInfo<Entity>) {
   useKeyUpEffect((e) => e.keyCode == KeyCode.escape && props.cancel())

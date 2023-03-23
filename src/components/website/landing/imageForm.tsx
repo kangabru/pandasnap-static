@@ -1,8 +1,8 @@
 "use client"
 
+import { IDS, Tag } from "@/common/constants"
+import { Wait } from "@/common/utils"
 import { useState } from "react"
-import { IDS, Tag } from "../../common/constants"
-import { Wait } from "../../common/utils"
 import { SpinnerButton, StatefulInputWithRef } from "../common/common"
 import TagSelect from "../tags/tagSelect"
 import { scrollToElement } from "./index"

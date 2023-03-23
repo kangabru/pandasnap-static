@@ -1,6 +1,6 @@
+import { KeyCode, urls } from "@/common/constants"
 import { useFocusInputRef } from "@/common/utils"
 import { useLayoutEffect, useRef, useState } from "react"
-import { KeyCode, urls } from "../../common/constants"
 import {
   CancelButton,
   Errors,

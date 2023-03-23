@@ -9,7 +9,7 @@ import {
 } from "react-spring"
 import { RectReadOnly } from "react-use-measure"
 import { useGesture } from "react-with-gesture"
-import { join } from "../../common/utils"
+import { join } from "@/common/utils"
 import { CancelButton, SpinnerButton } from "../common/common"
 
 type Size = { width: number; height: number }

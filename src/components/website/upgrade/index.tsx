@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 import { animated, useSpring, useTrail } from "react-spring"
-import { join } from "../../common/utils"
+import { join } from "@/common/utils"
 
 export default function UpgradeAnimation() {
   return (

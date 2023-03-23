@@ -5,13 +5,9 @@ import {
   useContext,
 } from "react"
 import { animated, useTransition } from "react-spring"
-import { urls } from "../../common/constants"
-import {
-  useBoolState,
-  useDocumentListener,
-  useOnEscape,
-} from "../../common/utils"
-import { ClickProtector, icons } from "../common/common"
+import { urls } from "@/common/constants"
+import { useBoolState, useDocumentListener, useOnEscape } from "@/common/utils"
+import { ClickProtector, icons } from "@/common"
 
 type HtmlAttrs = DetailedHTMLProps<
   ButtonHTMLAttributes<HTMLButtonElement>,

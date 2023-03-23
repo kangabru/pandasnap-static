@@ -1,5 +1,5 @@
-import { Content, urls } from "../../common/constants"
-import { useFocusInputRef, useOnEscape } from "../../common/utils"
+import { Content, urls } from "@/common/constants"
+import { useFocusInputRef, useOnEscape } from "@/common/utils"
 import {
   CancelButton,
   DeleteButton,
@@ -9,8 +9,8 @@ import {
   SaveButton,
   StatefulInputWithRef,
   TagSelect,
-} from "../common/common"
-import { FormInfo, RootInfo, useForm } from "../common/formUtils"
+} from "@/common"
+import { FormInfo, RootInfo, useForm } from "@/common/formUtils"
 
 const url = urls.content
 
