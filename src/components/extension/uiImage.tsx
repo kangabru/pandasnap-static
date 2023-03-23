@@ -1,6 +1,8 @@
+"use client"
+
 import { useEffect, useState } from "react"
 import dataTags from "../website/snaps/dataTags"
-import { errors, KeyCode, urls } from "./constants"
+import { KeyCode } from "./constants"
 import { useRandomMessage } from "./message"
 import TagSelect, { FetchTagsResponse } from "./tagSelect"
 import {
@@ -12,14 +14,7 @@ import {
   LockSize,
   SpinnerButton,
 } from "./uiCommon"
-import { nameCase, openExperiment, useKeyUpEffect } from "./utils"
-
-{
-  /* <ImageUi imageUrl={imageUrl} /> */
-}
-{
-  /* <LoadingPopup /> */
-}
+import { useKeyUpEffect, useOpenExperiment, Wait } from "./utils"
 
 export default function ImageUi(props: {
   removeImageUi: () => void
@@ -57,7 +52,7 @@ function FloatingWindow(props: {
 
   const stop = (e: Event) => {
     e.stopPropagation()
-    e.stopImmediatePropagation()
+    e.stopImmediatePropagation?.()
   }
 
   return (
@@ -82,9 +77,6 @@ function ImageForm(props: {
   imageUrl: string
   onSave: () => void
 }) {
-  const copy = async () => console.log("Copy to clipboard")
-  const download = () => console.log("DOWNLOAD")
-
   const [isSaving, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -99,6 +91,8 @@ function ImageForm(props: {
   const allowClose = () => setCanClose(true),
     blockClose = () => setCanClose(false)
 
+  const openExperiment = useOpenExperiment()
+
   return (
     <FloatingWindow
       closeOnEscape={canClose}
@@ -111,15 +105,15 @@ function ImageForm(props: {
       >
         <div className="row w-full space-x-3">
           <CloseButton onClick={props.removeImageUi} title="Close" />
-          <DownloadButton onClick={download as any} />
-          <CopyButton onClick={copy as any} />
+          <DownloadButton onClick={() => Promise.resolve(true)} />
+          <CopyButton onClick={() => Promise.resolve(true)} />
           {error && <span className="text-lg text-red-600">{error}</span>}
           <div className="flex-1"></div>
 
           <div className="relative mx-3">
             <CommonButton
               className="row relative space-x-1 px-3"
-              onClick={() => openExperiment()}
+              onClick={openExperiment}
             >
               <svg
                 className="h-5 w-5 translate-y-px -translate-x-px transform text-yellow-400"
@@ -174,13 +168,18 @@ function ImageForm(props: {
           </label>
         </div>
 
-        <div className="scrollbar h-full overflow-y-auto overscroll-contain">
+        <div className="scrollbar relative h-full overflow-y-auto overscroll-contain">
           <input type="file" name="image" hidden />
           <img
             src={props.imageUrl}
             alt="Screenshot"
             className="pointer-events-none w-full rounded"
           />
+          <div className="absolute top-1/3 left-0 right-0 z-10 -translate-y-1/2 overflow-hidden py-10">
+            <div className="-mx-2 -rotate-6 bg-gray-900 p-4 text-center text-lg">
+              This is a palceholder snapshot for demo purposes.
+            </div>
+          </div>
         </div>
       </form>
     </FloatingWindow>
@@ -191,31 +190,10 @@ function ImageForm(props: {
     if (!e.target) return
     setError(null)
     setIsLoading(true)
-
-    const data = new FormData(e.target as HTMLFormElement)
-    data.set("image", props.imageUrl)
-    data.set("url", window.location.href)
-    const response = await api.urlRequest(urls.content, "POST", data)
-
+    await Wait(1000)
     setIsLoading(false)
-
-    if ((response.status ?? 400) < 400) {
-      props.onSave()
-      setTimeout(props.removeImageUi, 1000)
-    } else if (response.data && Object.entries(response.data).length) {
-      const [field, fieldError] = Object.entries(response.data)[0] as [
-        string,
-        string
-      ]
-
-      if (field == "detail") setError(fieldError)
-      else if (field && field.length > 3 && fieldError && fieldError.length > 3)
-        setError(`${nameCase(field)}: ${fieldError}`)
-      else setError(errors.genericError)
-    } else {
-      setError(errors.genericError)
-    }
-    Promise.resolve()
+    props.onSave()
+    setTimeout(props.removeImageUi, 1000)
   }
 }
 

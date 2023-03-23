@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react"
 import useMeasure from "react-use-measure"
 import { KeyCode } from "./constants"
-import { AbsolutePosition, Dimensions, Size } from "./screenshot"
 import { CloseButton, CommonButton, join, LockIcon, LockSize } from "./uiCommon"
-import { openExperiment, useKeyUpEffect } from "./utils"
+import { useKeyUpEffect, useOpenExperiment } from "./utils"
+
+export type Size = { width: number; height: number }
+export type Dimensions = Size & { left: number; top: number }
+export type AbsolutePosition = {
+  left?: number
+  top?: number
+  right?: number
+  bottom?: number
+}
 
 export function cropUiPadding() {
   return 10 * window.devicePixelRatio
@@ -65,6 +73,8 @@ export function CropUi(props: {
 
   const buttonPosTop = getButtonPosition(winSize, dims, true)
   const buttonPosBot = getButtonPosition(winSize, dims, false)
+
+  const openExperiment = useOpenExperiment()
 
   return (
     <div ref={bind} className="h-screen w-screen">
@@ -133,7 +143,7 @@ export function CropUi(props: {
           <div className="relative mx-3">
             <CommonButton
               className="row relative space-x-1 px-3"
-              onClick={() => openExperiment()}
+              onClick={openExperiment}
             >
               <svg
                 className="h-5 w-5 translate-y-px -translate-x-px transform text-red-500"
@@ -151,7 +161,7 @@ export function CropUi(props: {
           <div className="relative">
             <CommonButton
               className="row space-x-1 px-3"
-              onClick={() => openExperiment()}
+              onClick={openExperiment}
             >
               <svg
                 className="h-5 w-5 translate-y-px -translate-x-px transform text-blue-500"

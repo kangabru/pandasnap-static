@@ -40,7 +40,7 @@ export default function TagSelect({ tags }: { tags: Tag[] }) {
       styles={{
         container: () => ({ position: "relative", borderRadius: "0.4rem" }),
         control: (_: any, s: any) => ({
-          padding: s.hasValue ? 0 : "1px 0",
+          padding: s.hasValue ? 0 : "0.1rem 0",
           opacity: s.isDisabled ? "0.7" : "1",
         }),
         valueContainer: (p: any, s: any) => ({

@@ -1,5 +1,5 @@
+import { useRouter } from "next/navigation"
 import { useEffect, useLayoutEffect, useRef } from "react"
-import { SerializedFormData } from "./types"
 
 export function useKeyUpEffect(
   keyup: (e: KeyboardEvent) => void,
@@ -25,23 +25,6 @@ export function getDownloadName() {
     minute = pad2(date.getMinutes())
   const timestamp = `${year}-${month}-${day} ${hour}-${minute}.png`
   return "Panda Snap " + timestamp
-}
-
-export function seriliaseFormData(data: FormData): SerializedFormData {
-  return JSON.stringify([...data.entries()])
-}
-
-export function getFormDataFromSerialised(
-  data: SerializedFormData,
-  transformValue?: (key: string, value: string) => any
-): FormData {
-  const formData = new FormData()
-  const dataList = JSON.parse(data) as [string, string][]
-  for (const [key, value] of dataList) {
-    const finalValue = transformValue ? transformValue(key, value) : value
-    formData.append(key, finalValue)
-  }
-  return formData
 }
 
 // Only allow string or blob properties
@@ -160,6 +143,8 @@ function randDelay(delayMin = 1000, delayMax = 1500) {
   return new Promise<null>((accept) => setTimeout(accept, delay))
 }
 
-export function openExperiment() {
-  console.log("EXPERIMENT")
+export function useOpenExperiment() {
+  const router = useRouter()
+  const openExperiment = () => router.push("/upgrade")
+  return openExperiment
 }

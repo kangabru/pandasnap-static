@@ -1,21 +1,23 @@
+"use client"
+
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 import useMeasure from "react-use-measure"
+import Flash from "../common"
 import { KeyCode } from "./constants"
-import {
-  Dimensions,
-  screenshotElementFromCropUi,
-  screenshotPage,
-  screenshotVisible,
-} from "./screenshot"
-import { CommonButton, join, LockIcon } from "./uiCommon"
-import { BlackOut, CropUi, cropUiPadding } from "./uiCrop"
-import { openExperiment, useKeyUpEffect } from "./utils"
+import { join, LockIcon } from "./uiCommon"
+import { BlackOut, CropUi, cropUiPadding, Dimensions } from "./uiCrop"
+import { useKeyUpEffect, useOpenExperiment, Wait } from "./utils"
 
 const MAX_DRAG_DIST = 5
 
 export default function ScreenshotUi({
+  onSnapPage,
+  onSnapElement,
   removeScreenshotUi,
 }: {
+  onSnapPage: () => void
+  onSnapElement: () => void
   removeScreenshotUi: () => void
 }) {
   const [selectedCrop, setSelectedCrop] = useState<Dimensions | undefined>(
@@ -23,13 +25,18 @@ export default function ScreenshotUi({
   )
   const [mode, setMode] = useState<"overlay" | "elem-select">("overlay")
 
+  const router = useRouter()
+
   useKeyUpEffect((e: KeyboardEvent) => {
     e.keyCode == KeyCode.escape && removeScreenshotUi()
   })
 
-  const screenshotThenClose = (screenshot: () => void) => () => {
+  const [showFlash, setShowFlash] = useState(false)
+
+  const screenshotThenClose = async () => {
+    setShowFlash(true)
+    await Wait(1000)
     removeScreenshotUi()
-    setTimeout(screenshot, 100)
   }
 
   const snapElement = () => {
@@ -38,91 +45,93 @@ export default function ScreenshotUi({
   }
 
   const viewSnaps = () => {
-    console.log("VEIW SNAPS")
+    router.push("/dashboard")
     removeScreenshotUi()
   }
 
-  const screenshotElem = (dims: Dimensions) =>
-    screenshotThenClose(() => screenshotElementFromCropUi(dims))()
+  const openExperiment = useOpenExperiment()
 
   return (
-    <div id="picker-ocean">
-      {selectedCrop ? (
-        <CropUi
-          initCrop={selectedCrop}
-          reselect={snapElement}
-          screenshot={screenshotElem}
-          closeUi={removeScreenshotUi}
-        />
-      ) : (
-        <>
-          <ScreenshotUiOverlay
+    <>
+      {showFlash && <Flash />}
+      <div id="picker-ocean">
+        {selectedCrop ? (
+          <CropUi
+            initCrop={selectedCrop}
+            reselect={snapElement}
+            screenshot={() => screenshotThenClose().then(onSnapElement)}
             closeUi={removeScreenshotUi}
-            setSelectedCrop={setSelectedCrop}
-            showSelectUI={mode == "elem-select"}
           />
+        ) : (
+          <>
+            <ScreenshotUiOverlay
+              closeUi={removeScreenshotUi}
+              setSelectedCrop={setSelectedCrop}
+              showSelectUI={mode == "elem-select"}
+            />
 
-          {mode == "overlay" && (
-            <div className="fixed top-0 right-0 pt-5 pr-5">
-              <div className="grid grid-cols-6 gap-2 rounded-lg bg-white p-2 text-lg shadow">
-                <ScreenshotUiTextButton
-                  id="snap-element"
-                  onClick={snapElement}
-                  text="Snap element"
-                  icon={
-                    <svg
-                      className="h-6 w-6 text-gray-800"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M6.672 1.911a1 1 0 10-1.932.518l.259.966a1 1 0 001.932-.518l-.26-.966zM2.429 4.74a1 1 0 10-.517 1.932l.966.259a1 1 0 00.517-1.932l-.966-.26zm8.814-.569a1 1 0 00-1.415-1.414l-.707.707a1 1 0 101.415 1.415l.707-.708zm-7.071 7.072l.707-.707A1 1 0 003.465 9.12l-.708.707a1 1 0 001.415 1.415zm3.2-5.171a1 1 0 00-1.3 1.3l4 10a1 1 0 001.823.075l1.38-2.759 3.018 3.02a1 1 0 001.414-1.415l-3.019-3.02 2.76-1.379a1 1 0 00-.076-1.822l-10-4z"
-                        clipRule="evenodd"
-                      ></path>
-                    </svg>
-                  }
-                />
-                <ScreenshotUiTextButton
-                  id="snap-snaps"
-                  onClick={viewSnaps}
-                  text="View snaps"
-                  icon={
-                    <svg
-                      className="h-6 w-6 text-gray-800"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
-                    </svg>
-                  }
-                />
-                <ScreenshotUiButton
-                  id="snap-page"
-                  onClick={screenshotThenClose(screenshotPage)}
-                  text="Snap Page"
-                  type={LargeButtonType.fullPage}
-                />
-                <ScreenshotUiButton
-                  id="snap-visible"
-                  onClick={screenshotThenClose(screenshotVisible)}
-                  text="Snap Visible"
-                  type={LargeButtonType.visible}
-                />
-                <ScreenshotUiButton
-                  id="snap-visible"
-                  onClick={() => openExperiment()}
-                  text="Source Code"
-                  type={LargeButtonType.sourceCode}
-                />
+            {mode == "overlay" && (
+              <div className="fixed top-0 right-0 pt-5 pr-5">
+                <div className="grid grid-cols-6 gap-2 rounded-lg bg-white p-2 text-lg shadow">
+                  <ScreenshotUiTextButton
+                    id="snap-element"
+                    onClick={snapElement}
+                    text="Snap element"
+                    icon={
+                      <svg
+                        className="h-6 w-6 text-gray-800"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M6.672 1.911a1 1 0 10-1.932.518l.259.966a1 1 0 001.932-.518l-.26-.966zM2.429 4.74a1 1 0 10-.517 1.932l.966.259a1 1 0 00.517-1.932l-.966-.26zm8.814-.569a1 1 0 00-1.415-1.414l-.707.707a1 1 0 101.415 1.415l.707-.708zm-7.071 7.072l.707-.707A1 1 0 003.465 9.12l-.708.707a1 1 0 001.415 1.415zm3.2-5.171a1 1 0 00-1.3 1.3l4 10a1 1 0 001.823.075l1.38-2.759 3.018 3.02a1 1 0 001.414-1.415l-3.019-3.02 2.76-1.379a1 1 0 00-.076-1.822l-10-4z"
+                          clipRule="evenodd"
+                        ></path>
+                      </svg>
+                    }
+                  />
+                  <ScreenshotUiTextButton
+                    id="snap-snaps"
+                    onClick={viewSnaps}
+                    text="View snaps"
+                    icon={
+                      <svg
+                        className="h-6 w-6 text-gray-800"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                      </svg>
+                    }
+                  />
+                  <ScreenshotUiButton
+                    id="snap-page"
+                    onClick={() => screenshotThenClose().then(onSnapPage)}
+                    text="Snap Page"
+                    type={LargeButtonType.fullPage}
+                  />
+                  <ScreenshotUiButton
+                    id="snap-visible"
+                    onClick={() => screenshotThenClose().then(onSnapElement)}
+                    text="Snap Visible"
+                    type={LargeButtonType.visible}
+                  />
+                  <ScreenshotUiButton
+                    id="snap-visible"
+                    onClick={openExperiment}
+                    text="Source Code"
+                    type={LargeButtonType.sourceCode}
+                  />
+                </div>
               </div>
-            </div>
-          )}
-        </>
-      )}
-    </div>
+            )}
+          </>
+        )}
+      </div>
+    </>
   )
 }
 
@@ -310,12 +319,13 @@ function ScreenshotUiOverlay(props: {
     >
       <BlackOut dimensions={selectedCrop} animate={!isDragging} />
       {props.showSelectUI && (
-        <div className="col fixed inset-0 mx-auto max-w-lg justify-center space-y-3 text-center text-3xl text-white">
-          <div className="pointer-events-none h-16 w-20 rounded-lg border-4 border-dashed border-white"></div>
-          <p className="pointer-events-none select-none">
-            Click a specific element or click and drag to crop a custom area
-          </p>
-          <CommonButton onClick={props.closeUi} text="Cancel" />
+        <div className="fixed inset-0 grid place-items-center text-center text-3xl text-white">
+          <div className="col w-full max-w-lg justify-center space-y-3 rounded-lg bg-black/30 p-8">
+            <div className="pointer-events-none h-16 w-20 rounded-lg border-4 border-dashed border-white"></div>
+            <p className="pointer-events-none select-none">
+              Click a specific element or click and drag to crop a custom area
+            </p>
+          </div>
         </div>
       )}
     </div>

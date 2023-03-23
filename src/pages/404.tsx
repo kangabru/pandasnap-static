@@ -4,7 +4,7 @@ import Link from "next/link"
 import "../app/globals.css"
 
 import deadPanda from "public/images/dead-panda.png"
-import favicon from "app/favicon.ico"
+import favicon from "../app/favicon.ico"
 
 export default function NotFound() {
   return (

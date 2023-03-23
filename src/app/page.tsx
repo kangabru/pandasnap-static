@@ -24,6 +24,7 @@ import { useEffect, useMemo, useState } from "react"
 import { isOneOf, Wait } from "@/common/utils"
 import ImageSelect from "@/components/website/landing/imageSelect"
 import Link from "next/link"
+import Flash from "@/components/common"
 
 let ImageSnapMap = {
   [SnappedImage.elem1]: imageDemo1,
@@ -89,7 +90,8 @@ export function Disclaimer() {
     <div className="row w-full bg-green-200 p-2">
       <div className="row mx-auto w-full max-w-screen-lg justify-center text-center">
         <p>
-          PandaSnap has shut down. This is now used as a portfolio project demo.
+          Panda Snap has shut down. This is now used as a portfolio project
+          demo.
         </p>
       </div>
     </div>
@@ -628,20 +630,6 @@ function Footer() {
         </a>
       </p>
     </footer>
-  )
-}
-
-function Flash({ onFinish }: { onFinish: () => void }) {
-  const [opacity, setOpacity] = useState(1)
-  useEffect(() => {
-    setOpacity(0)
-    setTimeout(() => onFinish(), 1000)
-  }, [onFinish])
-  return (
-    <div
-      className="fixed inset-0 z-max bg-white transition-opacity duration-2000"
-      style={{ opacity }}
-    ></div>
   )
 }
 

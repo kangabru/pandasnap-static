@@ -86,7 +86,7 @@ export function CopyButton(
 }
 
 function ButtonWithConfirm(
-  props: Omit<HtmlAttrs, "onClick"> & { onClick: () => Promise<boolean> }
+  props: Omit<HtmlAttrs, "onClick"> & { onClick: () => boolean }
 ) {
   const { onClick, ...rest } = props
   const [clickWithConfirm, confirmState] = useClickConfirmState(onClick)

@@ -1,19 +1,22 @@
 "use client"
 
 import ClientOnly from "@/common/client-only"
+import ImageUi from "@/components/extension/uiImage"
 import ScreenshotUi from "@/components/extension/uiScreenshot"
 import { useState } from "react"
 import { Disclaimer } from "../page"
+
 import "./page.css"
+import imageLanding from "public/images/landing.jpg"
+import imageElement from "public/images/demo1.jpg"
 
 export default function Dashboard() {
-  const [showUi, setShowUi] = useState(true)
   return (
     <main className="min-h-screen w-full border-b-8 border-green-200 bg-white">
       <Disclaimer />
       <Content />
       <ClientOnly>
-        {showUi && <ScreenshotUi removeScreenshotUi={() => setShowUi(false)} />}
+        <Screenshot />
       </ClientOnly>
     </main>
   )
@@ -22,7 +25,25 @@ export default function Dashboard() {
 function Content() {
   return (
     <article className="prose mx-auto mt-12 lg:prose-xl">
-      <h1>Lorem ipsum dolor</h1>
+      <h1>Demo Extension Page</h1>
+      <p className="rounded bg-green-200 py-2 px-3">
+        <svg
+          className="-mt-1 mr-1 inline h-5 w-5 text-green-900"
+          aria-hidden="true"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            clipRule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z"
+            fillRule="evenodd"
+          />
+        </svg>
+        This page demonstrates how the Panda Snap extension used to work. Use
+        the top right panel to see how users snapped pictures to save to their
+        collection.
+      </p>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua. Adipiscing elit
@@ -90,5 +111,59 @@ function Content() {
         pharetra massa massa ultricies mi quis hendrerit dolor magna.
       </p>
     </article>
+  )
+}
+
+enum ScreenshotState {
+  Closed,
+  TakeSnapshot,
+  ImageLanding,
+  ImageElement,
+}
+
+function Screenshot() {
+  const [state, setState] = useState(ScreenshotState.TakeSnapshot)
+  return (
+    <>
+      {state === ScreenshotState.Closed && (
+        <button
+          className="fixed top-14 right-10 rounded-full bg-white p-3 text-blue-900 shadow-md hover:bg-blue-100"
+          onClick={() => setState(ScreenshotState.TakeSnapshot)}
+        >
+          <svg
+            className="h-6 w-6"
+            aria-hidden="true"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clipRule="evenodd"
+              d="M1 8a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 018.07 3h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0016.07 6H17a2 2 0 012 2v7a2 2 0 01-2 2H3a2 2 0 01-2-2V8zm13.5 3a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM10 14a3 3 0 100-6 3 3 0 000 6z"
+              fillRule="evenodd"
+            />
+          </svg>
+        </button>
+      )}
+      {state === ScreenshotState.TakeSnapshot && (
+        <ScreenshotUi
+          onSnapElement={() => setState(ScreenshotState.ImageElement)}
+          onSnapPage={() => setState(ScreenshotState.ImageLanding)}
+          removeScreenshotUi={() => setState(ScreenshotState.Closed)}
+        />
+      )}
+      {state === ScreenshotState.ImageLanding && (
+        <ImageUi
+          imageUrl={imageLanding.src}
+          removeImageUi={() => setState(ScreenshotState.Closed)}
+        />
+      )}
+      {state === ScreenshotState.ImageElement && (
+        <ImageUi
+          imageUrl={imageElement.src}
+          removeImageUi={() => setState(ScreenshotState.Closed)}
+        />
+      )}
+    </>
   )
 }
