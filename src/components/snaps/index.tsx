@@ -1,5 +1,5 @@
 import NextImage from "next/image"
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useContext, useEffect, useMemo, useState } from "react"
 import { animated, config, interpolate, useTransition } from "react-spring"
 import useMeasure from "react-use-measure"
 import create from "zustand"
@@ -46,7 +46,7 @@ type Filter = {
 
   snaps: ContentImage[]
   snapLoadState: SnapLoadState
-  nextUrl?: number
+  hasNext?: boolean
   getNext: () => void
   loadSnaps: (currentSnaps?: ContentImage[]) => void
 }
@@ -97,27 +97,29 @@ const useFilter = create<Filter>(
       getNext: async () => {
         const s = get()
         s.snapLoadState == SnapLoadState.None &&
-          s.nextUrl &&
+          s.hasNext &&
           s.loadSnaps(s.snaps)
       },
       loadSnaps: async (currentSnaps?: ContentImage[]) => {
         const state = get()
 
-        let filteredSnaps = getFilteredSnaps(state)
-        const nextUrl = state.nextUrl || 0
-        const nextUrlNext = nextUrl + 10
-        const snaps = filteredSnaps.slice(nextUrl, nextUrlNext)
+        const filteredSnaps = getFilteredSnaps(state)
+        const indexStart = currentSnaps?.length || 0
+        const indexEnd = indexStart + 10
+        const snaps = filteredSnaps.slice(indexStart, indexEnd)
 
         set({
           snaps: currentSnaps ?? [],
-          nextUrl: undefined,
+          hasNext: undefined,
           snapLoadState: SnapLoadState.Loading,
         })
-        await Wait(1000)
-        const newSnaps = await Promise.all(snaps.map(loadContent) ?? [])
-        set({ snapLoadState: SnapLoadState.None })
+        const [_, newSnaps] = await Promise.all([
+          Wait(1000),
+          Promise.all(snaps.map(loadContent)),
+        ])
         set({
-          nextUrl: nextUrlNext < dataSnaps.length ? nextUrlNext : undefined,
+          snapLoadState: SnapLoadState.None,
+          hasNext: indexEnd < filteredSnaps.length,
           snaps: [...(currentSnaps ?? []), ...newSnaps],
         })
       },
@@ -378,23 +380,21 @@ const SCROLL_THRESHOLD_RATE_LIMIT_MS = 200
 function SnapMasonry() {
   useTagLoader()
 
-  // Hook to manage snaps
-  const {
-    loadSnaps,
-    nextUrl: hasNext,
-    getNext,
-  } = useFilter(({ loadSnaps, nextUrl, getNext }) => ({
-    loadSnaps,
-    nextUrl,
-    getNext,
-  }))
-  const { snaps, snapLoadState, hasFilters } = useFilter(
-    ({ snaps, snapLoadState, hasFilters }) => ({
-      snaps,
-      snapLoadState,
-      hasFilters,
-    })
+  const loadSnaps = useFilter((s) => s.loadSnaps)
+  const hasNext = useFilter((s) => s.hasNext)
+  const getNext = useFilter((s) => s.getNext)
+  const snaps = useFilter((s) => s.snaps)
+  const snapLoadState = useFilter((s) => s.snapLoadState)
+  const hasFilters = useFilter((s) => s.hasFilters)
+
+  const tagIdsSelected = useFilter((s) => s.tagIdsSelected)
+  const searchText = useFilter((s) => s.searchText)
+
+  const filterKey = useMemo(
+    () => `${searchText}-${[...tagIdsSelected.keys()].join("-")}`,
+    [searchText, tagIdsSelected]
   )
+
   const isLoading = snapLoadState == SnapLoadState.Loading
 
   useEffect(() => void loadSnaps(), [loadSnaps])
@@ -485,7 +485,6 @@ function SnapMasonry() {
       height,
       opacity: 0,
     }),
-    trail: 25,
   } as any)
 
   const maxHeight = Math.max(...heights)
@@ -496,6 +495,7 @@ function SnapMasonry() {
   return (
     <div ref={bind} className="h-full w-full">
       <animated.div
+        key={filterKey}
         className="relative mx-auto mb-8"
         style={{ height: maxHeight, width: maxWidth }}
       >
@@ -778,7 +778,7 @@ function getFilteredSnaps(state: Filter): Content[] {
 
       for (let word of searchableWords)
         for (let term of searchTerms) {
-          if (word.indexOf(term) !== -1) {
+          if (word.includes(term)) {
             isSearchMatch = true
             break
           }
