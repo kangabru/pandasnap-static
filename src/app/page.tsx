@@ -15,16 +15,16 @@ import imagePromoCover from "public/images/promo-cover.jpg"
 
 import ClientOnly from "@/common/client-only"
 import { IDS } from "@/common/constants"
+import { isOneOf, Wait } from "@/common/utils"
+import Flash, { Disclaimer, Footer } from "@/components/common"
 import { scrollToElement } from "@/components/website/landing"
 import ImageForm, {
   SetImage,
   SnappedImage,
 } from "@/components/website/landing/imageForm"
-import { useEffect, useMemo, useState } from "react"
-import { isOneOf, Wait } from "@/common/utils"
 import ImageSelect from "@/components/website/landing/imageSelect"
 import Link from "next/link"
-import Flash from "@/components/common"
+import { useMemo, useState } from "react"
 
 let ImageSnapMap = {
   [SnappedImage.elem1]: imageDemo1,
@@ -37,7 +37,7 @@ let ImageSnapMap = {
 export default function LandingPage() {
   return (
     <main className="w-full border-b-8 border-green-200 bg-white">
-      <Header />
+      <LandingHeader />
       <div className="h-28 bg-indigo-100 sm:h-40"></div>
       <Banner />
       <Interactive />
@@ -47,10 +47,10 @@ export default function LandingPage() {
   )
 }
 
-function Header() {
+function LandingHeader() {
   return (
     <header className="fixed top-0 z-50 w-full">
-      {Disclaimer()}
+      <Disclaimer />
       <div className="row justify-between bg-white py-2 px-4 text-lg shadow-lg sm:py-3 sm:px-6 sm:text-xl">
         <div className="row button-outline group space-x-4 rounded px-3 py-2">
           <Image
@@ -82,19 +82,6 @@ function Header() {
         <path d="M 0 2 Q 0.5 0 1 2 L 1 0 L 0 0 Z"></path>
       </svg>
     </header>
-  )
-}
-
-export function Disclaimer() {
-  return (
-    <div className="row w-full bg-green-200 p-2">
-      <div className="row mx-auto w-full max-w-screen-lg justify-center text-center">
-        <p>
-          Panda Snap has shut down. This is now used as a portfolio project
-          demo.
-        </p>
-      </div>
-    </div>
   )
 }
 
@@ -612,24 +599,6 @@ function MadeByFlaticon() {
         www.flaticon.com
       </a>
     </p>
-  )
-}
-
-function Footer() {
-  return (
-    <footer className="col mt-10 space-y-5 pb-6 text-center text-gray-800">
-      <p className="text-2xl">
-        Made with 🤟 by
-        <a
-          href="https://twitter.com/kanga_bru"
-          target="_blank"
-          rel="noreferrer"
-          className="button-outline rounded p-1 text-green-500 hover:underline"
-        >
-          kangabru
-        </a>
-      </p>
-    </footer>
   )
 }
 

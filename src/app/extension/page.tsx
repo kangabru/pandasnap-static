@@ -4,11 +4,11 @@ import ClientOnly from "@/common/client-only"
 import ImageUi from "@/components/extension/uiImage"
 import ScreenshotUi from "@/components/extension/uiScreenshot"
 import { useState } from "react"
-import { Disclaimer } from "../page"
 
-import "./page.css"
-import imageLanding from "public/images/landing.jpg"
+import { Disclaimer } from "@/components/common"
 import imageElement from "public/images/demo1.jpg"
+import imageLanding from "public/images/landing.jpg"
+import "./page.css"
 
 export default function Dashboard() {
   return (
