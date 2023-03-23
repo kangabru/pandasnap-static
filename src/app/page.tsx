@@ -2,16 +2,16 @@
 
 import Image, { StaticImageData } from "next/image"
 
-import iconChrome from "../../public/icons/chrome.png"
-import iconFirefox from "../../public/icons/firefox.png"
-import iconLogo from "../../public/icons/logo.png"
+import iconChrome from "public/icons/chrome.png"
+import iconFirefox from "public/icons/firefox.png"
+import iconLogo from "public/icons/logo.png"
 
-import imageDemo1 from "../../public/images/demo1.jpg"
-import imageDemo2 from "../../public/images/demo2.jpg"
-import imageDemo3 from "../../public/images/demo3.jpg"
-import imageLandingPanda from "../../public/images/landing-panda.jpg"
-import imageLandingStripe from "../../public/images/landing.jpg"
-import imagePromoCover from "../../public/images/promo-cover.jpg"
+import imageDemo1 from "public/images/demo1.jpg"
+import imageDemo2 from "public/images/demo2.jpg"
+import imageDemo3 from "public/images/demo3.jpg"
+import imageLandingPanda from "public/images/landing-panda.jpg"
+import imageLandingStripe from "public/images/landing.jpg"
+import imagePromoCover from "public/images/promo-cover.jpg"
 
 import ClientOnly from "@/common/client-only"
 import { IDS } from "@/common/constants"

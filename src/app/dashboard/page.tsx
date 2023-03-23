@@ -4,7 +4,7 @@ import ClientOnly from "@/common/client-only"
 import Snaps from "@/components/website/snaps"
 import Image from "next/image"
 import Link from "next/link"
-import iconLogo from "../../../public/icons/logo.png"
+import iconLogo from "public/icons/logo.png"
 import { Disclaimer } from "../page"
 
 export default function Dashboard() {

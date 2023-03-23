@@ -1,56 +1,94 @@
 "use client"
 
-import Image from "next/image"
-import Link from "next/link"
-import iconLogo from "../../../public/icons/logo.png"
+import ClientOnly from "@/common/client-only"
+import ScreenshotUi from "@/components/extension/uiScreenshot"
+import { useState } from "react"
 import { Disclaimer } from "../page"
+import "./page.css"
 
 export default function Dashboard() {
+  const [showUi, setShowUi] = useState(true)
   return (
     <main className="min-h-screen w-full border-b-8 border-green-200 bg-white">
-      <Header />
+      <Disclaimer />
+      <Content />
+      <ClientOnly>
+        {showUi && <ScreenshotUi removeScreenshotUi={() => setShowUi(false)} />}
+      </ClientOnly>
     </main>
   )
 }
 
-function Header() {
+function Content() {
   return (
-    <header className="top-0 z-50 mb-6 w-full">
-      <Disclaimer />
-      <div className="bg-white shadow-md">
-        <div className="row container justify-between px-4 py-2 text-lg leading-none sm:px-6 sm:py-4 sm:text-xl">
-          <a
-            href="{% url 'home' %}"
-            className="row button-outline group space-x-2 rounded p-2"
-          >
-            <Image
-              src={iconLogo}
-              alt="Logo"
-              className="pointer-events-none h-6 w-8 scale-100 transform group-hover:scale-105 sm:h-8 sm:w-10 lg:h-10 lg:w-12"
-            />
-            <span className="hidden whitespace-nowrap sm:block lg:text-2xl">
-              Panda Snap
-            </span>
-          </a>
-
-          <div className="row space-x-3 sm:space-x-5">
-            <Link
-              href="/"
-              className="font-semibold text-gray-800 hover:underline"
-            >
-              Landing
-            </Link>
-          </div>
-        </div>
-      </div>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 1 1 1"
-        preserveAspectRatio="none"
-        className="h-px w-full fill-current text-white sm:h-1 lg:h-2"
-      >
-        <path d="M 0 2 Q 0.5 0 1 2 L 1 0 L 0 0 Z"></path>
-      </svg>
-    </header>
+    <article className="prose mx-auto mt-12 lg:prose-xl">
+      <h1>Lorem ipsum dolor</h1>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Adipiscing elit
+        pellentesque habitant morbi. Velit scelerisque in dictum non consectetur
+        a erat. Pharetra diam sit amet nisl suscipit adipiscing bibendum est.
+        Vitae tortor condimentum lacinia quis vel. Et tortor consequat id porta.
+        Ac feugiat sed lectus vestibulum mattis ullamcorper velit sed
+        ullamcorper. Ut sem nulla pharetra diam sit. Vel pretium lectus quam id
+        leo. Congue mauris rhoncus aenean vel elit scelerisque. Tempus quam
+        pellentesque nec nam aliquam sem et tortor. Tellus elementum sagittis
+        vitae et leo duis ut diam quam. Pharetra convallis posuere morbi leo
+        urna. Ac tincidunt vitae semper quis lectus nulla at volutpat.
+      </p>
+      <p>
+        Arcu dictum varius duis at consectetur lorem. Tristique sollicitudin
+        nibh sit amet commodo nulla facilisi nullam vehicula. Scelerisque mauris
+        pellentesque pulvinar pellentesque habitant morbi tristique senectus et.
+        Nibh sit amet commodo nulla facilisi. In vitae turpis massa sed. Enim ut
+        sem viverra aliquet eget. Volutpat lacus laoreet non curabitur gravida
+        arcu ac tortor dignissim. Aenean pharetra magna ac placerat vestibulum
+        lectus. Turpis egestas sed tempus urna et pharetra pharetra massa massa.
+        Pellentesque habitant morbi tristique senectus et netus et malesuada
+        fames. Proin sed libero enim sed faucibus turpis. Ac felis donec et odio
+        pellentesque diam volutpat.
+      </p>
+      <p>
+        Eros in cursus turpis massa tincidunt dui ut ornare. Commodo sed egestas
+        egestas fringilla phasellus faucibus. Eleifend mi in nulla posuere
+        sollicitudin aliquam ultrices. Porttitor lacus luctus accumsan tortor
+        posuere ac. Massa tincidunt nunc pulvinar sapien et ligula ullamcorper.
+        Orci sagittis eu volutpat odio facilisis mauris. Laoreet suspendisse
+        interdum consectetur libero id faucibus nisl. Egestas diam in arcu
+        cursus euismod quis. Malesuada proin libero nunc consequat interdum
+        varius sit. Dolor sit amet consectetur adipiscing elit ut aliquam.
+        Libero enim sed faucibus turpis in. Turpis egestas sed tempus urna et
+        pharetra. Urna neque viverra justo nec ultrices dui. Feugiat in
+        fermentum posuere urna nec tincidunt praesent. Integer vitae justo eget
+        magna fermentum iaculis eu non diam.
+      </p>
+      <p>
+        Phasellus vestibulum lorem sed risus. Curabitur vitae nunc sed velit
+        dignissim sodales. Augue lacus viverra vitae congue eu consequat. At
+        erat pellentesque adipiscing commodo elit at. Ut tellus elementum
+        sagittis vitae et. Ipsum nunc aliquet bibendum enim facilisis gravida.
+        Aliquet enim tortor at auctor urna nunc. Etiam sit amet nisl purus in
+        mollis nunc. Lacus vel facilisis volutpat est velit egestas. Odio morbi
+        quis commodo odio aenean sed. Aliquam malesuada bibendum arcu vitae
+        elementum curabitur vitae. Velit aliquet sagittis id consectetur purus.
+        Justo nec ultrices dui sapien eget. Sodales ut eu sem integer vitae.
+        Orci a scelerisque purus semper eget duis. Vel quam elementum pulvinar
+        etiam.
+      </p>
+      <p>
+        Massa vitae tortor condimentum lacinia quis vel eros donec ac. Sed cras
+        ornare arcu dui vivamus. Sodales ut eu sem integer vitae justo eget
+        magna. Et odio pellentesque diam volutpat commodo sed egestas. Pulvinar
+        proin gravida hendrerit lectus a. Augue mauris augue neque gravida. A
+        pellentesque sit amet porttitor eget dolor. Platea dictumst quisque
+        sagittis purus sit amet. Magna fermentum iaculis eu non diam. Dictum at
+        tempor commodo ullamcorper a lacus vestibulum sed. Orci porta non
+        pulvinar neque laoreet suspendisse interdum consectetur. Tristique nulla
+        aliquet enim tortor at auctor urna. Nunc sed augue lacus viverra vitae
+        congue eu consequat. Sit amet nisl suscipit adipiscing. Fermentum
+        posuere urna nec tincidunt praesent semper feugiat nibh sed. Pharetra
+        pharetra massa massa ultricies mi quis hendrerit dolor magna.
+      </p>
+    </article>
   )
 }
