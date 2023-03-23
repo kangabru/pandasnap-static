@@ -89,8 +89,7 @@ export function Disclaimer() {
     <div className="row w-full bg-green-200 p-2">
       <div className="row mx-auto w-full max-w-screen-lg justify-center text-center">
         <p>
-          PandaSnap has shut down. What you see is now a demo page used as a
-          portfolio project.
+          PandaSnap has shut down. This is now used as a portfolio project demo.
         </p>
       </div>
     </div>
