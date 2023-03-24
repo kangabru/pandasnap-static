@@ -14,9 +14,9 @@ import imageLandingStripe from "public/images/landing.jpg"
 import imagePromoCover from "public/images/promo-cover.jpg"
 
 import ClientOnly from "@/common/client-only"
-import { IDS } from "@/common/constants"
+import { IDS, urls } from "@/common/constants"
 import { isOneOf, Wait } from "@/common/utils"
-import Flash, { Disclaimer, Footer } from "@/components/common"
+import Flash, { Disclaimer, Footer, HeaderLinks } from "@/components/common"
 import { scrollToElement } from "@/components/website/landing"
 import ImageForm, {
   SetImage,
@@ -51,26 +51,21 @@ function LandingHeader() {
   return (
     <header className="fixed top-0 z-50 w-full">
       <Disclaimer />
-      <div className="row justify-between bg-white py-2 px-4 text-lg shadow-lg sm:py-3 sm:px-6 sm:text-xl">
-        <div className="row button-outline group space-x-4 rounded px-3 py-2">
-          <Image
-            src={iconLogo}
-            alt="Logo"
-            className="pointer-events-none h-6 w-8 scale-100 transform sm:h-8 sm:w-10 lg:h-10 lg:w-12"
-          />
+      <div className="w-full bg-white shadow-lg">
+        <div className="row mx-auto max-w-screen-xl justify-between py-1 px-4 text-lg sm:py-1 sm:px-6 sm:text-xl">
+          <div className="row button-outline group space-x-4 rounded px-3 py-2">
+            <Image
+              src={iconLogo}
+              alt="Logo"
+              className="pointer-events-none h-6 w-8 scale-100 transform sm:h-8 sm:w-10"
+            />
 
-          <span className="hidden whitespace-nowrap sm:block md:text-2xl lg:text-3xl">
-            Panda Snap
-          </span>
-        </div>
+            <span className="hidden whitespace-nowrap sm:block md:text-xl lg:text-2xl">
+              Panda Snap
+            </span>
+          </div>
 
-        <div className="row space-x-3 sm:space-x-5">
-          <Link
-            href="/dashboard"
-            className="font-semibold text-gray-800 hover:underline"
-          >
-            Dashboard
-          </Link>
+          <HeaderLinks />
         </div>
       </div>
       <svg
@@ -127,7 +122,7 @@ function Banner() {
 
         <div className="col mt-10 space-y-4">
           <Link
-            href="/dashboard"
+            href={urls.collection}
             className="button button-primary row button-shadow button-outline justify-center space-x-3 rounded-lg py-3 px-4 text-2xl font-bold text-white"
           >
             <span className="text-2xl sm:text-3xl">Get started</span>
@@ -296,7 +291,7 @@ function BrowserExtensions() {
       <div className="row mt-5 flex-wrap justify-center">
         <Link
           className="row button bg-white-200 mx-2 mt-2 block space-x-1.5 whitespace-nowrap rounded-lg py-3 px-4 text-xl"
-          href="/extension"
+          href={urls.extension}
         >
           <Image
             alt=""
@@ -307,7 +302,7 @@ function BrowserExtensions() {
         </Link>
         <Link
           className="row button bg-white-200 mx-2 mt-2 block space-x-1.5 whitespace-nowrap rounded-lg py-3 px-4 text-xl"
-          href="/extension"
+          href={urls.extension}
         >
           <Image
             alt=""
@@ -388,13 +383,14 @@ function Step2(props: { snapped: SnappedImage | undefined; onSave: SetImage }) {
 
   return (
     <section className="col container pt-20 lg:flex-row-reverse lg:justify-evenly lg:space-y-0">
-      <div className="col max-w-lg flex-1 items-center justify-center space-y-3 text-center lg:ml-5 lg:items-start lg:text-left">
+      <div
+        id={IDS.section2}
+        className="col max-w-lg flex-1 items-center justify-center space-y-3 text-center lg:ml-5 lg:items-start lg:text-left"
+      >
         <span className="row h-8 w-8 justify-center rounded-full bg-green-400 p-2 text-lg font-bold text-white">
           2
         </span>
-        <h2 id={IDS.section2} className="text-4xl">
-          Save for the future
-        </h2>
+        <h2 className="text-4xl">Save for the future</h2>
         <p className="text-xl">
           Designing from scratch is <i>hard</i>. Build up a collection of
           inspiring designs specific to you.
@@ -480,13 +476,13 @@ function Step3({ reset }: { reset: () => void }) {
           Browse snaps for inspiration
         </h2>
 
-        <p className="text-xl leading-loose sm:text-2xl">
+        <p className="max-w-2xl text-xl leading-loose sm:text-2xl">
           We help you organise and find snaps to inspire your next project.
           Create <b>better</b> designs and <b>save time</b> by emulating them.
         </p>
         <div className="pt-4 pb-6">
           <Link
-            href="/dashboard"
+            href={urls.collection}
             className="button button-primary row button-shadow button-outline justify-center space-x-3 rounded-lg py-3 px-5 text-2xl font-bold text-white"
           >
             <span className="text-3xl sm:text-4xl">Join now!</span>

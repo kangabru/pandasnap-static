@@ -5,6 +5,7 @@ import "../app/globals.css"
 
 import deadPanda from "public/images/dead-panda.png"
 import favicon from "../app/favicon.ico"
+import { urls } from "@/common/constants"
 
 export default function NotFound() {
   return (
@@ -18,7 +19,7 @@ export default function NotFound() {
           <Image alt="" className="block w-full max-w-sm" src={deadPanda} />
           <div className="relative z-10 px-10 text-center font-mono">
             <div>Lost Panda (404)</div>
-            <Link href="/" className="link">
+            <Link href={urls.home} className="link">
               Go home
             </Link>
           </div>

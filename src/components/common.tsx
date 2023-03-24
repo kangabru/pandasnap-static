@@ -1,33 +1,35 @@
 "use client"
 
+import { urls } from "@/common/constants"
 import Image from "next/image"
 import Link from "next/link"
 import iconLogo from "public/icons/logo.png"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
-export function Header() {
+type HeaderProps = {
+  hideDash?: boolean
+  hideExtension?: boolean
+}
+
+export function Header(props: HeaderProps) {
   return (
     <header className="top-0 z-50 mb-6 w-full">
       <Disclaimer />
       <div className="bg-white shadow-md">
         <div className="row container justify-between px-4 py-2 text-lg leading-none sm:px-6 sm:py-4 sm:text-xl">
-          <Image
-            src={iconLogo}
-            alt="Logo"
-            className="pointer-events-none h-6 w-8 scale-100 transform group-hover:scale-105 sm:h-8 sm:w-10 lg:h-10 lg:w-12"
-          />
-          <span className="hidden whitespace-nowrap sm:block lg:text-2xl">
-            Panda Snap
-          </span>
+          <Link
+            title="Landing page"
+            href={urls.home}
+            className="hover:scale-105"
+          >
+            <Image
+              src={iconLogo}
+              alt="Logo"
+              className="pointer-events-none h-6 w-8 sm:h-8 sm:w-10"
+            />
+          </Link>
 
-          <div className="row space-x-3 sm:space-x-5">
-            <Link
-              href="/"
-              className="font-semibold text-gray-800 hover:underline"
-            >
-              Landing
-            </Link>
-          </div>
+          <HeaderLinks {...props} />
         </div>
       </div>
       <svg
@@ -42,16 +44,61 @@ export function Header() {
   )
 }
 
+export function HeaderLinks(props: HeaderProps) {
+  return (
+    <div className="row space-x-3 text-gray-800 sm:space-x-5">
+      {!props.hideDash && (
+        <Link
+          title="Collection"
+          href={urls.collection}
+          className="hover:scale-105"
+        >
+          <svg
+            className="h-6 w-6"
+            aria-hidden="true"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M4.75 3A1.75 1.75 0 003 4.75v2.752l.104-.002h13.792c.035 0 .07 0 .104.002V6.75A1.75 1.75 0 0015.25 5h-3.836a.25.25 0 01-.177-.073L9.823 3.513A1.75 1.75 0 008.586 3H4.75zM3.104 9a1.75 1.75 0 00-1.673 2.265l1.385 4.5A1.75 1.75 0 004.488 17h11.023a1.75 1.75 0 001.673-1.235l1.384-4.5A1.75 1.75 0 0016.896 9H3.104z" />
+          </svg>
+        </Link>
+      )}
+      {!props.hideExtension && (
+        <Link
+          title="Extension"
+          href={urls.extension}
+          className="hover:scale-105"
+        >
+          <svg
+            className="h-6 w-6"
+            aria-hidden="true"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clipRule="evenodd"
+              d="M1 8a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 018.07 3h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0016.07 6H17a2 2 0 012 2v7a2 2 0 01-2 2H3a2 2 0 01-2-2V8zm13.5 3a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM10 14a3 3 0 100-6 3 3 0 000 6z"
+              fillRule="evenodd"
+            />
+          </svg>
+        </Link>
+      )}
+    </div>
+  )
+}
+
 export function Disclaimer() {
   return (
-    <div className="row w-full bg-green-200 p-2">
+    <Link className="row w-full bg-green-200 p-2" href={urls.about}>
       <div className="row mx-auto w-full max-w-screen-lg justify-center text-center">
         <p>
-          Panda Snap has shut down. This is now used as a portfolio project
-          demo.
+          This is now a portfolio project demo site as the Panda Snap service
+          has shut down. <u>Read more here.</u>
         </p>
       </div>
-    </div>
+    </Link>
   )
 }
 

@@ -1,23 +1,20 @@
 const api = "/api"
 export const urls = {
   home: "/",
+  collection: "/collection",
+  extension: "/extension",
+  upgrade: "/upgrade",
+  about: "/about",
+
   logout: "/logout",
   profile: "/profile",
-  extension: "/extension-chrome",
   extensionFirefox: "/extension-firefox",
   admin: "/admin/",
-  about: "/about",
   whatsNew: "/changelog",
   howTo: "/learn",
-  // tagList: api + "/tag/",
-  // tagNew: `${api}/tag/`,
-  // contentList: api + "/content/",
   contentNew: `${api}/content/`,
   feedback: `${api}/feedback/`,
-  // tag: (id) => `${api}/tag/${id}/`,
   content: (id: string) => `${api}/content/${id}/`,
-  // viewContent: (id) => `/content/${id}`,
-  // email: "mailto:scott@pandasnap.io",
   twitter: "https://twitter.com/kanga_bru",
 }
 
