@@ -79,7 +79,7 @@ export function CropUi(props: {
   return (
     <div ref={bind} className="h-screen w-screen">
       <div
-        className="absolute inset-0 overflow-hidden"
+        className="fixed inset-0 overflow-hidden"
         style={{ width, height }}
         onMouseMove={ezFunc(moveDrag, moveResize) as any}
         onMouseUp={stop as any}

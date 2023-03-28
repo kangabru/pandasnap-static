@@ -144,7 +144,7 @@ function ImageForm(props: {
 
         <div
           className={
-            "row w-full space-x-3 text-gray-800 " +
+            "row relative z-10 w-full space-x-3 text-gray-800 " +
             (isSaving ? "opacity-75" : "")
           }
         >
@@ -168,7 +168,7 @@ function ImageForm(props: {
           </label>
         </div>
 
-        <div className="scrollbar relative h-full overflow-y-auto overscroll-contain">
+        <div className="scrollbar relative z-0 h-full overflow-y-auto overscroll-contain">
           <input type="file" name="image" hidden />
           <img
             src={props.imageUrl}
