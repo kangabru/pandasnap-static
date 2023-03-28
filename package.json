@@ -13,6 +13,7 @@
     "check": "npm run lint && npm run typecheck && npm run pretty:check"
   },
   "dependencies": {
+    "@next/mdx": "^13.2.4",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/typography": "^0.5.9",
     "@types/node": "18.15.0",

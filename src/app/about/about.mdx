@@ -1,0 +1,124 @@
+import Embed from "./embed"
+
+Panda Snap was a side project I built in July 2020 during lock down
+whilst stranded in Guatemala.
+It was one of my '[12 start-ups](https://kangabru.me/2020/04/01/corona-creations)' projects which I built for enjoyment, learning, and as potential businesses.
+
+Panda Snap was my most successful project at the time and led me to meet some amazing people and even future clients.
+
+Ultimately I did not grow Panda Snap into a business but I learnt a ton about what building a start-up entails.
+This page summarises the life of the project.
+
+---
+
+## The beginning
+
+I started the project to solve my desire to design beautiful interfaces.
+I often looked to others for inspiration and decided to make a 'design capture' tool.
+
+Here's one of my earliest tweets showing the early UI of the project.
+
+<Embed
+  date="July 31, 2020"
+  text="Not a bad view from the office 🌋"
+  href="https://twitter.com/kanga_bru/status/1289296379827773440"
+/>
+
+---
+
+## Reddit launch
+
+After I built an early version of the product I followed some advice and pre-launched on Reddit.
+I got 300 sign-ups within a couple of days and had more attention than I knew what to do with.
+
+<Embed
+  date="Aug 16, 2020"
+  text="Woah my Reddit thread blew up a little last night too. Almost 150 signs up this morning! Stoked 🤙"
+  href="https://twitter.com/kanga_bru/status/1294997756113817601"
+/>
+
+<Embed
+  date="Aug 18, 2020"
+  author="KP (@thisiskp_)"
+  text={[
+    "A few days ago you might recall that I openly shared my playbook to acquire the first 100 customers for your product",
+    "Today I've learned that @kanga_bru",
+    "took that advice and ran with it fantastically",
+    "Check out his success story. I'm so stoked!",
+  ]}
+  href="https://twitter.com/thisiskp_/status/1295765425423351808"
+/>
+
+---
+
+## Technical Deep Dive
+
+This was one of the more interesting technical issues I had to solve.
+Posting issues like this on Twitter led me to meet great people.
+
+<Embed
+  date="August 29, 2020"
+  text={[
+    "Yesterday I fixed a major issue I've had with Panda Snap 🐼",
+    "A key feature is snapshotting elements which I do by injecting a custom UI.",
+    "The problem is that page styles sometimes broke my UI!",
+    "Here's how I fixed it (a thread) 👇",
+  ]}
+  href="https://twitter.com/kanga_bru/status/1299828596656218112"
+/>
+
+---
+
+## Multi-platform Support
+
+One of the big challenges with building an extension is supporting more than just a server and front-end.
+I wanted to support Chrome/Firefox and potentially mobile too, but these all add complexity and require separate codebases, authentication, and UIs.
+
+Testing that all of these components worked together was a challenge.
+
+One feature I'm proud of was how I built an end-to-end testing suite using Selenium.
+It made sure everything worked together by loading the extension at runtime, logging in via the server, then testing flows in a unified way. This took some work upfront but once it worked I could build quickly without breaking stuff.
+
+<Embed
+  date="Oct 11, 2020"
+  text={[
+    "Long time, no post. Been converting Panda Snap for Firefox but it's been tricky...",
+    "😁 webextension-polyfill is awesome. It exposes the same APIs in Chrome/FF + uses promises over callbacks 👌",
+    "🤕 APIs/permissions differ subtly. Went a little mad fixing them...",
+    "Getting there!",
+  ]}
+  href="https://twitter.com/kanga_bru/status/1315130345533124609"
+/>
+
+---
+
+## Pretty Snap
+
+In an effort to do marketing via side projects I built a spin-off site to spice up screenshots.
+I had a blast filling it with fun animations and integrations to give users a unique and memorable experience.
+
+I decided to [open source](https://github.com/kangabru/pretty-snap) it and overall both users and developers seemed to like it.
+
+<Embed
+  date="Nov 22, 2020"
+  text="I think she's ready 😁 Check out Pretty Snap and make your snapshots look awesome!"
+  href="https://twitter.com/kanga_bru/status/1330391711588167680"
+/>
+
+---
+
+## Contract work
+
+During those few months of building in public I had met a surprising amount of smart and talented people. I was even recommended to companies quick frequently and I ended up taking on contract work with numerous start-ups in New York, San Francisco, and Australia. I never expected posting on Twitter to be such a rewarding experience but I'm glad I gave it some effort.
+
+Sadly though, my ability to maintain Panda Snap and other project slowly waned...
+
+## Shut down
+
+_March 2023_
+
+After two years of operation I decided to cease operating the Panda Snap service. The extensions had become outdated due to changes in browsers, and I no longer had the time to add features or even maintain them in a changing technical landscape.
+
+In order to showcase what Panda Snap was like I decided to make this website where I host a demo version of some Panda Snap features. My hope is that other can take inspiration from it to build their own products in future!
+
+If you were a user of Panda Snap and would like to access your data, please [email me here](mailto:panda@kangabru.me).
