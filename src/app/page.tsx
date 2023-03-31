@@ -133,22 +133,18 @@ function Banner() {
         </div>
 
         <div className="relative mx-auto mt-10 max-w-2xl">
-          {process.env.NODE_ENV === "production" ? (
-            <video
-              className="button-outline overflow-hidden rounded"
-              controls={false}
-              preload="auto"
-              src="https://kb-elemental.s3.amazonaws.com/videos/promo-264.mp4"
-            />
-          ) : (
-            <div className="aspect-w-16 aspect-h-9 mx-auto w-full max-w-6xl overflow-hidden rounded-lg border-1 border-gray-400 shadow-lg">
-              <Image
-                alt=""
-                src={imagePromoCover}
-                className="w-full overflow-hidden rounded bg-cover bg-center object-cover"
-              />
-            </div>
-          )}
+          <video
+            className="button-outline overflow-hidden rounded"
+            autoPlay
+            controls={false}
+            preload="true"
+            loop
+            muted
+            controlsList="nodownload nofullscreen noremoteplayback"
+            disablePictureInPicture
+            poster={imagePromoCover.src}
+            src="https://kb-elemental.s3.amazonaws.com/videos/promo-800.mp4"
+          />
 
           <p className="mt-10 text-lg">
             Made with 🤟 by
