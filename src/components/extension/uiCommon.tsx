@@ -49,7 +49,7 @@ export function DownloadButton(
   }
 ) {
   return (
-    <ButtonWithConfirm {...props} title="Download">
+    <ButtonWithConfirm {...(props as any)} title="Download">
       <svg
         className="h-5 w-5"
         fill="none"
@@ -71,7 +71,7 @@ export function CopyButton(
   }
 ) {
   return (
-    <ButtonWithConfirm {...props} title="Copy to clipboard">
+    <ButtonWithConfirm {...(props as any)} title="Copy to clipboard">
       <svg
         className="h-5 w-5"
         fill="currentColor"
@@ -89,7 +89,7 @@ function ButtonWithConfirm(
   props: Omit<HtmlAttrs, "onClick"> & { onClick: () => boolean }
 ) {
   const { onClick, ...rest } = props
-  const [clickWithConfirm, confirmState] = useClickConfirmState(onClick)
+  const [clickWithConfirm, confirmState] = useClickConfirmState(onClick as any)
   return (
     <CommonButton {...rest} className="row" onClick={clickWithConfirm}>
       {/* Show tick on confirm */}
@@ -182,7 +182,7 @@ export function SpinnerButton(
   )
 }
 
-export function Spinner(props: { classSize?: string; classColor?: string }) {
+function Spinner(props: { classSize?: string; classColor?: string }) {
   const cls = "animate-spin -ml-1 mr-2"
   const clsSize = props.classSize ?? "h-5 w-5"
   const clsColor = props.classColor ?? "text-white"

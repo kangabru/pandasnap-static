@@ -4,9 +4,9 @@ import { KeyCode } from "./constants"
 import { CloseButton, CommonButton, join, LockIcon, LockSize } from "./uiCommon"
 import { useKeyUpEffect, useOpenExperiment } from "./utils"
 
-export type Size = { width: number; height: number }
+type Size = { width: number; height: number }
 export type Dimensions = Size & { left: number; top: number }
-export type AbsolutePosition = {
+type AbsolutePosition = {
   left?: number
   top?: number
   right?: number
@@ -23,13 +23,9 @@ export function CropUi(props: {
   screenshot: (d: Dimensions) => void
   closeUi: () => void
 }) {
-  useKeyUpEffect(
-    (e: KeyboardEvent) => {
-      e.keyCode == KeyCode.escape && props.closeUi()
-    },
-    [],
-    true
-  )
+  useKeyUpEffect((e: KeyboardEvent) => {
+    e.keyCode == KeyCode.escape && props.closeUi()
+  }, [])
 
   const [bind, { width, height }] = useMeasure({ scroll: true })
   const winSize = { width, height }
@@ -486,8 +482,4 @@ function toPath(rect: Dimensions | undefined, rad = 5) {
   const cornorBL = `a${rad},${rad} 0 0 1 -${rad},-${rad}`
 
   return `M${left},${top} ${cornorTL} h${width} ${cornorTR} v${height} ${cornorBR} h-${width} ${cornorBL} z`
-}
-
-export function getElementDimensions(elem: HTMLElement) {
-  return elem ? (elem.getBoundingClientRect() as Dimensions) : undefined
 }

@@ -1,18 +1,15 @@
-import { Tag } from "@/common/constants"
+import { Tag, TagUuid } from "@/common/constants"
 import { useMemo } from "react"
 import SelectInput from "react-select/creatable"
 
-export type FetchTagsResponse = Promise<{ success: boolean; tags: Tag[] }>
-export enum FetchRequestType {
+export type FetchTagsResponse = Promise<{ success: boolean; tags: TagUuid[] }>
+enum FetchRequestType {
   init,
   normal,
 }
-export type FetchTagsFunction = (type: FetchRequestType) => FetchTagsResponse
+type FetchTagsFunction = (type: FetchRequestType) => FetchTagsResponse
 
-export type CreateTagResponse = Promise<{ success: boolean; tag: Tag }>
-export type CreateTagType = (d: FormData) => CreateTagResponse
-
-export type TagSelectProps = {
+type TagSelectProps = {
   fetchTags: FetchTagsFunction
   defaultTagIds?: (string | number)[]
   isDisabled?: boolean

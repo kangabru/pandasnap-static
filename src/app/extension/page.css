@@ -1,121 +1,119 @@
-/** Note that this get renamed to 'index.css' when built. */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer components {
-    .row {
-        @apply flex flex-row items-center;
-    }
+  .row {
+    @apply flex flex-row items-center;
+  }
 
-    .col {
-        @apply flex flex-col items-center;
-    }
+  .col {
+    @apply flex flex-col items-center;
+  }
 
-    .link {
-        @apply text-green-500 hover:text-green-600 hover:underline button-outline rounded p-1;
-    }
+  .link {
+    @apply button-outline rounded p-1 text-green-500 hover:text-green-600 hover:underline;
+  }
 
-    .button {
-        @apply p-2 bg-white hover:bg-gray-100 text-gray-800 button-shadow button-outline rounded select-none cursor-pointer leading-tight disabled:cursor-not-allowed disabled:opacity-75;
-    }
+  .button {
+    @apply button-shadow button-outline cursor-pointer select-none rounded bg-white p-2 leading-tight text-gray-800 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-75;
+  }
 
-    .button-primary {
-        @apply   p-2 text-white font-bold bg-green-400 hover:bg-green-500;
-    }
+  .button-primary {
+    @apply bg-green-400 p-2 font-bold text-white hover:bg-green-500;
+  }
 
-    .form-input {
-        @apply px-3 py-2 rounded button-outline border-none bg-white;
-    }
+  .form-input {
+    @apply button-outline rounded border-none bg-white px-3 py-2;
+  }
 
-    .form-input:focus {
-        @apply shadow-outline border-none;
-    }
+  .form-input:focus {
+    @apply shadow-outline border-none;
+  }
 }
 
 @layer utilities {
-    .transition-100 {
-        @apply transition-all duration-150;
-    }
+  .transition-100 {
+    @apply transition-all duration-150;
+  }
 
-    .shadow-outline {
-        @apply ring ring-green-500 ring-opacity-50;
-    }
+  .shadow-outline {
+    @apply ring ring-green-500 ring-opacity-50;
+  }
 
-    .focus\:shadow-outline:focus {
-        @apply shadow-outline;
-    }
+  .focus\:shadow-outline:focus {
+    @apply shadow-outline;
+  }
 
-    .button-shadow {
-        @apply shadow hover:shadow-md transition-100;
-    }
+  .button-shadow {
+    @apply transition-100 shadow hover:shadow-md;
+  }
 
-    .button-outline {
-        @apply focus:shadow-outline outline-none focus:outline-none;
-    }
+  .button-outline {
+    @apply focus:shadow-outline outline-none focus:outline-none;
+  }
 
-    .bg-gradient-pink-orange {
-        @apply bg-pink-400 bg-gradient-to-r from-pink-400 to-orange-300;
-    }
+  .bg-gradient-pink-orange {
+    @apply bg-pink-400 bg-gradient-to-r from-pink-400 to-orange-300;
+  }
 
-    .bullet-xl {
-        @apply relative pl-5 text-left text-xl;
-    }
+  .bullet-xl {
+    @apply relative pl-5 text-left text-xl;
+  }
 
-    .bullet-xl:before {
-        content: "";
-        position: absolute;
-        background-color: #cbd5e0;
-        border-radius: 50%;
-        width: 0.375em;
-        height: 0.375em;
-        top: calc(0.875em - 0.1875em);
-        left: 0.25em;
-    }
+  .bullet-xl:before {
+    content: "";
+    position: absolute;
+    background-color: #cbd5e0;
+    border-radius: 50%;
+    width: 0.375em;
+    height: 0.375em;
+    top: calc(0.875em - 0.1875em);
+    left: 0.25em;
+  }
 
-    @screen lg {
-        .lg\:items-normal {
-            align-items: normal;
-        }
+  @screen lg {
+    .lg\:items-normal {
+      align-items: normal;
     }
+  }
 
-    .scrollbar::-webkit-scrollbar {
-        @apply w-2 bg-transparent;
-    }
+  .scrollbar::-webkit-scrollbar {
+    @apply w-2 bg-transparent;
+  }
 
-    .scrollbar::-webkit-scrollbar-thumb {
-        @apply bg-gray-700 rounded-lg;
-    }
+  .scrollbar::-webkit-scrollbar-thumb {
+    @apply rounded-lg bg-gray-700;
+  }
 
-    .scrollbar::-webkit-scrollbar-track {
-        @apply bg-gray-300 bg-opacity-25;
-    }
+  .scrollbar::-webkit-scrollbar-track {
+    @apply bg-gray-300 bg-opacity-25;
+  }
 }
 
 .input__input {
-    @apply focus:outline-none focus:ring-transparent;
+  @apply focus:outline-none focus:ring-transparent;
 }
 
 .input__control {
-    @apply form-input rounded border-1 border-transparent flex flex-row;
+  @apply form-input flex flex-row rounded border-1 border-transparent;
 }
 
 .input__control--is-focused {
-    @apply outline-none shadow-outline border-none;
+  @apply shadow-outline border-none outline-none;
 }
 
 .input__placeholder {
-    @apply text-gray-500;
+  @apply text-gray-500;
 }
 
 .input__multi-value__label {
-    user-select: none;
+  user-select: none;
 }
 
 .input__indicator,
 .input__clear-indicator,
 .input__dropdown-indicator,
 .input__multi-value__remove {
-    @apply cursor-pointer;
+  @apply cursor-pointer;
 }

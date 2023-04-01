@@ -1,9 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useRandomMessage } from "../website/message"
 import dataTags from "../website/snaps/dataTags"
 import { KeyCode } from "./constants"
-import { useRandomMessage } from "./message"
 import TagSelect, { FetchTagsResponse } from "./tagSelect"
 import {
   CloseButton,
@@ -46,8 +46,7 @@ function FloatingWindow(props: {
       if (props.closeOnEscape !== undefined && props.closeOnEscape)
         e.keyCode == KeyCode.escape && props.removeImageUi()
     },
-    [props.closeOnEscape],
-    true
+    [props.closeOnEscape]
   )
 
   const stop = (e: Event) => {
@@ -170,6 +169,7 @@ function ImageForm(props: {
 
         <div className="scrollbar relative z-0 h-full overflow-y-auto overscroll-contain">
           <input type="file" name="image" hidden />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={props.imageUrl}
             alt="Screenshot"
@@ -198,7 +198,7 @@ function ImageForm(props: {
 }
 
 /** Fetches tags. Initial requests are local (if possible) and subsequent requests hit the server. */
-export async function apiFetchTags(): FetchTagsResponse {
+async function apiFetchTags(): FetchTagsResponse {
   return { success: true, tags: dataTags }
 }
 

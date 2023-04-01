@@ -1,4 +1,4 @@
-import { join, useDocumentListener, useOnEscape } from "@/common/utils"
+import { join, useOnEscape } from "@/common/utils"
 import {
   ButtonHTMLAttributes,
   DetailedHTMLProps,
@@ -11,7 +11,6 @@ import {
   useRef,
   useState,
 } from "react"
-import { useRandomErrorShort, useRandomMessage } from "../message"
 import TagSelectOg from "../tags/tagSelect"
 
 type HtmlAttrsButton = DetailedHTMLProps<
@@ -37,7 +36,7 @@ export function ClickProtector(
   return <div {...{ ...props, onClick }}></div>
 }
 
-export function CommonButton(
+function CommonButton(
   props: HtmlAttrsButton & {
     isPrimary?: boolean
     text?: string
@@ -58,7 +57,7 @@ export function CommonButton(
   )
 }
 
-export function EditButton(props: { onClick: () => void }) {
+function EditButton(props: { onClick: () => void }) {
   return (
     <button title="Edit" className="button p-2" onClick={props.onClick}>
       {icons.edit()}
@@ -169,7 +168,7 @@ type StatefulInputProps = {
   postInput?: (value: string) => void
 } & Omit<HtmlAttrsInput, "ref" | "value" | "autofocus" | "onInput">
 
-export function StatefulInput(
+function StatefulInput(
   props: StatefulInputProps,
   _ref?: React.Ref<HTMLInputElement>
 ) {
@@ -196,72 +195,10 @@ export const StatefulInputWithRef = forwardRef<
   StatefulInputProps
 >(StatefulInput)
 
-const deleteConfirmMessages = ["You sure?", "Really?", "For real?", "Yeah?"]
-
-export function DeleteButton(props: { url: string; onSuccess: () => void }) {
-  const confirmMessage = useRandomMessage(deleteConfirmMessages)
-  const errorMessage = useRandomErrorShort()
-
-  const [state, setBool] = useOneBoolState("isNormal", [
-    "isAsking",
-    "isDeleting",
-    "isError",
-  ])
-  const { isNormal, isDeleting, isError, isAsking } = state
-
-  // Listen for click away or escape
-  useOnEscape(() => setBool("isNormal"), isAsking)
-  useDocumentListener("click", () => isAsking && setBool("isNormal"), [
-    isAsking,
-  ])
-
-  const onClick = (e: any) => {
-    e.stopPropagation()
-    if (isDeleting) return
-    if (isNormal) return setBool("isAsking")
-
-    setBool("isDeleting")
-    // axios
-    //   .delete(props.url)
-    //   .then((e) => {
-    //     setBool(e.status < 400 ? "isNormal" : "isError")
-    //     props.onSuccess()
-    //   })
-    //   .catch(() => setBool("isError"))
-  }
-
-  return isNormal ? (
-    <button
-      title="Delete"
-      className="button p-2 text-gray-700"
-      onClick={onClick}
-    >
-      {icons.trash()}
-    </button>
-  ) : (
-    <SpinnerButton
-      type="button"
-      onClick={onClick}
-      disabled={isDeleting}
-      text={
-        isError
-          ? errorMessage
-          : isAsking
-          ? confirmMessage
-          : isDeleting
-          ? "Deleting"
-          : "Delete"
-      }
-      isLoading={isDeleting}
-      className="button bg-red-400 py-2 px-3 text-white hover:bg-red-500"
-    />
-  )
-}
-
 type BoolState<T> = { [K in keyof T]: boolean }
 
 /** A state which maintains a single bool as true */
-export function useOneBoolState<T>(
+function useOneBoolState<T>(
   init: keyof T,
   values: (keyof T)[]
 ): [BoolState<T>, (key: keyof T) => void] {
@@ -282,11 +219,11 @@ export function useOneBoolState<T>(
   return [state, setBool]
 }
 
-export async function apiFetchTags() {
+async function apiFetchTags() {
   return Promise.resolve({ success: true, tags: [] as any })
 }
 
-export function apiCreateTags(): any {
+function apiCreateTags(): any {
   return (_: FormData) => Promise.resolve({ success: true, tag: {} as any })
 }
 
@@ -425,7 +362,7 @@ export const icons = {
   ),
 }
 
-export function useResizableTextArea(): [
+function useResizableTextArea(): [
   string,
   MutableRefObject<HTMLTextAreaElement | undefined>
 ] {

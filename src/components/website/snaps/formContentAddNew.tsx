@@ -105,7 +105,7 @@ function SavedPopup(props: { onClose: () => void }) {
 }
 
 function AddForm(props: { cancel: () => void; onSuccess: () => void }) {
-  const { submit, formState } = useForm(urls.contentNew, props.onSuccess)
+  const { submit, formState } = useForm("", props.onSuccess)
 
   const titleRef = useFocusInputRef()
   const onFileChange = () => titleRef?.current?.focus()
@@ -180,6 +180,7 @@ function ImageSelect(props: {
         onKeyDown={(e) => e.keyCode == KeyCode.enter && openFileSelect()}
       >
         {image ? (
+          // eslint-disable-next-line @next/next/no-img-element
           <img alt="" className="pointer-events-none w-full" src={image} />
         ) : (
           icons.image("w-40 max-h-full opacity-50")

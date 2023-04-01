@@ -1,11 +1,6 @@
 import { DependencyList, useEffect, useRef, useState } from "react"
 import { KeyCode } from "./constants"
 
-// jimbob => Jimbob
-export function nameCase(str: string | undefined) {
-  return str ? str.charAt(0).toUpperCase() + str.slice(1) : ""
-}
-
 export function useKeyUpEffect(
   keyup: (e: KeyboardEvent) => void,
   isActive: boolean = true
@@ -23,6 +18,7 @@ export function useDocumentListener<K extends keyof DocumentEventMap>(
   useEffect(() => {
     document.addEventListener(type, listener)
     return () => document.removeEventListener(type, listener)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, inputs)
 }
 

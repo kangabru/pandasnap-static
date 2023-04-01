@@ -320,7 +320,7 @@ type BlackOutProps = {
   className?: string
 }
 
-export function BlackOut(
+function BlackOut(
   props: {
     dimsAnim: DimsAnim
     color?: string

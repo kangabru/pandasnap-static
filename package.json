@@ -10,6 +10,7 @@
     "pretty:check": "npx prettier --check .",
     "pretty:write": "npx prettier --write .",
     "typecheck": "tsc --noEmit",
+    "unusedcheck": "ts-unused-exports ./tsconfig.json",
     "check": "npm run lint && npm run typecheck && npm run pretty:check"
   },
   "dependencies": {
@@ -39,6 +40,7 @@
     "prettier": "2.8.4",
     "prettier-plugin-tailwindcss": "^0.2.4",
     "react-with-gesture": "^4.0.8",
-    "tailwindcss": "^3.2.7"
+    "tailwindcss": "^3.2.7",
+    "ts-unused-exports": "^9.0.4"
   }
 }

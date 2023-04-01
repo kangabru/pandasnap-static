@@ -1,4 +1,4 @@
-import { Content, imageUrls, TagUuid as Tag, urls } from "@/common/constants"
+import { Content, TagUuid as Tag, urls } from "@/common/constants"
 import {
   join,
   useBoolState,
@@ -12,7 +12,6 @@ import { animated, config, interpolate, useTransition } from "react-spring"
 import useMeasure from "react-use-measure"
 import create from "zustand"
 import { ClickProtector, StatefulInputWithRef } from "../common/common"
-import { searchTerms, useRandomMessage } from "../message"
 import { dataSnaps, dataTags } from "./data"
 import { ContentAddFormButton, useContentAddForm } from "./formContentAddNew"
 
@@ -200,8 +199,6 @@ function AdvancedSearchBar() {
     leave: { opacity: 0 },
   })
 
-  const searchMessage = useRandomMessage(searchTerms)
-
   return (
     <section className="relative z-10 flex-1">
       <ClickProtector
@@ -227,7 +224,7 @@ function AdvancedSearchBar() {
         <StatefulInputWithRef
           postInput={postInput}
           title="Search snaps"
-          placeholder={searchMessage}
+          placeholder="Search something..."
           className={join(
             "button-outline focus:shadow-outline w-full rounded px-3 py-2 text-lg focus:border-none",
             isOpen && "border-1"
@@ -654,7 +651,7 @@ function EmptyState() {
         </a>
         <a
           className="button bg-white-200 mx-2 mt-2 block space-x-2 whitespace-nowrap rounded-lg py-3 px-4 text-xl"
-          href={urls.extensionFirefox}
+          href={urls.extension}
         >
           <NextImage
             alt=""
@@ -677,9 +674,7 @@ function Snap(
   snap: ContentImage & { isLong: boolean; children?: JSX.Element }
 ) {
   const error = snap.error
-  const backgroundImage = error
-    ? `url('${imageUrls.deadPanda}')`
-    : `url('${snap.image}')`
+  const backgroundImage = error ? `` : `url('${snap.image}')`
 
   const getTags = useFilter((s) => s.getTags)
   const tags = getTags(snap.tags)
@@ -687,7 +682,6 @@ function Snap(
   return (
     <div
       title={snap.name}
-      // href={urls.viewContent(snap.uuid)}
       style={{ backgroundImage }}
       className={join(
         "col group relative h-full w-full transform space-y-2 overflow-hidden rounded bg-no-repeat p-2 shadow transition-all duration-100 hover:scale-102 hover:shadow-lg",

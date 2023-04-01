@@ -9,10 +9,10 @@ type StateInfo<Entity> = {
   edit: () => void
   cancel: () => void
 }
-export type RootInfo = { id: string }
-export type FormInfo<Entity> = RootInfo & StateInfo<Entity>
+type RootInfo = { id: string }
+type FormInfo<Entity> = RootInfo & StateInfo<Entity>
 
-export function useEntityForm<Entity>(url: string, props: FormInfo<Entity>) {
+function useEntityForm<Entity>(url: string, props: FormInfo<Entity>) {
   useKeyUpEffect((e) => e.keyCode == KeyCode.escape && props.cancel())
   return useForm<Entity>(url, (r) => {
     props.cancel()
