@@ -1,6 +1,7 @@
 "use client"
 
 import { urls } from "@/common/constants"
+import { Wait } from "@/common/utils"
 import { Footer, Header } from "@/components/common"
 import Link from "next/link"
 
@@ -37,12 +38,19 @@ function Content() {
 }
 
 function ShutDownLink() {
-  const scrollToBottom = () =>
+  const _scrollToBottom = () =>
     window.scrollTo({
       left: 0,
       top: document.body.scrollHeight,
       behavior: "smooth",
     })
+
+  const scrollToBottom = () =>
+    Promise.all([
+      Wait(0).then(_scrollToBottom),
+      Wait(500).then(_scrollToBottom),
+      Wait(1000).then(_scrollToBottom), // quick hack for Twitter size changes
+    ])
 
   return (
     <button className="w-full text-center" onClick={scrollToBottom}>

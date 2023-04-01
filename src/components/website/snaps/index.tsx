@@ -12,7 +12,6 @@ import { animated, config, interpolate, useTransition } from "react-spring"
 import useMeasure from "react-use-measure"
 import create from "zustand"
 import { ClickProtector, StatefulInputWithRef } from "../common/common"
-import { dataSnaps, dataTags } from "./data"
 import { ContentAddFormButton, useContentAddForm } from "./formContentAddNew"
 
 enum TagLoadState {
@@ -65,9 +64,10 @@ const useFilter = create<Filter>(
       tagLoadState: TagLoadState.None,
       loadTags: async () => {
         set({ tagLoadState: TagLoadState.Loading })
-        await Wait(1000)
+        console.log("Importing")
+        const [dataTags] = await Promise.all([import("./dataTags"), Wait(1000)])
         const tags: Record<string, Tag> = {}
-        dataTags.forEach((tag) => {
+        dataTags.default.forEach((tag) => {
           tags[tag.uuid] = tag
         })
         set({ tagMap: tags, tagLoadState: TagLoadState.Loaded })
@@ -95,9 +95,11 @@ const useFilter = create<Filter>(
           s.loadSnaps(s.snaps)
       },
       loadSnaps: async (currentSnaps?: ContentImage[]) => {
+        set({ snapLoadState: SnapLoadState.Loading })
+
         const state = get()
 
-        const filteredSnaps = getFilteredSnaps(state)
+        const filteredSnaps = await getFilteredSnaps(state)
         const indexStart = currentSnaps?.length || 0
         const indexEnd = indexStart + 10
         const snaps = filteredSnaps.slice(indexStart, indexEnd)
@@ -105,11 +107,10 @@ const useFilter = create<Filter>(
         set({
           snaps: currentSnaps ?? [],
           hasNext: undefined,
-          snapLoadState: SnapLoadState.Loading,
         })
-        const [_, newSnaps] = await Promise.all([
-          Wait(1000),
+        const [newSnaps] = await Promise.all([
           Promise.all(snaps.map(loadContent)),
+          Wait(1000),
         ])
         set({
           snapLoadState: SnapLoadState.None,
@@ -750,12 +751,14 @@ function TagTag(props: { name: string }) {
   )
 }
 
-function getFilteredSnaps(state: Filter): Content[] {
-  const snaps: Content[] = []
+async function getFilteredSnaps(state: Filter): Promise<Content[]> {
+  console.log("Importing snaps")
 
+  const snaps: Content[] = []
   const searchTerms = toWords(state.searchText)
 
-  for (let snap of dataSnaps) {
+  const dataSnaps = await import("./dataSnaps")
+  for (let snap of dataSnaps.default) {
     // Ensure *some* search words match
     let isSearchMatch = false
 

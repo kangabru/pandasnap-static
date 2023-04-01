@@ -1,5 +1,6 @@
 "use client"
 
+import { urls } from "@/common/constants"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import useMeasure from "react-use-measure"
@@ -45,7 +46,7 @@ export default function ScreenshotUi({
   }
 
   const viewSnaps = () => {
-    router.push("/dashboard")
+    router.push(urls.collection)
     removeScreenshotUi()
   }
 
