@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { useEffect, useState } from "react"
 import { useRandomMessage } from "../website/message"
 import dataTags from "../website/snaps/dataTags"
@@ -169,8 +170,7 @@ function ImageForm(props: {
 
         <div className="scrollbar relative z-0 h-full overflow-y-auto overscroll-contain">
           <input type="file" name="image" hidden />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={props.imageUrl}
             alt="Screenshot"
             className="pointer-events-none w-full rounded"

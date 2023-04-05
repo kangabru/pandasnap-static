@@ -1,5 +1,6 @@
-import { KeyCode, urls } from "@/common/constants"
+import { KeyCode } from "@/common/constants"
 import { useFocusInputRef } from "@/common/utils"
+import Image from "next/image"
 import { useLayoutEffect, useRef, useState } from "react"
 import {
   CancelButton,
@@ -180,8 +181,7 @@ function ImageSelect(props: {
         onKeyDown={(e) => e.keyCode == KeyCode.enter && openFileSelect()}
       >
         {image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img alt="" className="pointer-events-none w-full" src={image} />
+          <Image alt="" className="pointer-events-none w-full" src={image} />
         ) : (
           icons.image("w-40 max-h-full opacity-50")
         )}
