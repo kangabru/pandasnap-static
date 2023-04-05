@@ -5,6 +5,7 @@ export const urls = {
   upgrade: "/upgrade",
   about: "/about",
   twitter: "https://twitter.com/kanga_bru",
+  repo: "https://github.com/kangabru/pandasnap-static",
 }
 
 export type Content = {
