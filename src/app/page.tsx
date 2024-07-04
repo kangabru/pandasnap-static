@@ -143,7 +143,7 @@ function Banner() {
             controlsList="nodownload nofullscreen noremoteplayback"
             disablePictureInPicture
             poster={imagePromoCover.src}
-            src="https://kb-elemental.s3.amazonaws.com/videos/promo-800.mp4"
+            src="https://d2fv143yyuzud8.cloudfront.net/promo-264.mp4"
           />
 
           <p className="mt-10 text-lg">
